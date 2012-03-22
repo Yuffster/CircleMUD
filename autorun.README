@@ -1,0 +1,29 @@
+From: Peter Ajamian <peter@pajamian.dhs.org>
+
+This is something I did a few weeks ago but didn't get around to
+submitting it until now.  Basically There have always been a few things
+about the autorun script which have always irked me, this "improved"
+version is my attempt to correct those deficiencies as well as to add a
+little bit of extra functionality to the script.  The script addresses
+the following deficiencies:
+- syslog rotation:  When a new MUD is started an error is produced
+  during the syslog rotation after the first 6 times the MUD is run.  This
+  is because there is no check for the existance of the files being
+  rotated.
+- autorun crashes append to log instead of rotating: If autorun crashes,
+  or is manually killed, or a server reboot is done without first shutting
+  down the MUD then the new syslog will continue to append to the old one
+  instead of rotating the syslogs and starting a fresh one.  This is
+  because the syslogs are currently rotated only _after_ the mud is
+  properly shut down.  To correct for this I have allowed for syslog
+  rotation before the MUD boots as well.  Also this script will detect
+  improper shutdown of autorun and make a note in the syslog before
+  rotating them.
+- Better customization of grep-generated logs:  Various options have been
+  added to the autorun script to allow for easy customization of
+  grep-generated logs.  See the comments in the script for details.
+
+You may want to do some compatibility testing on varying platforms
+because this uses various commands that were are not present in the
+current autorun (cut, mktemp, and maybe others I can't think of now). 
+This script also uses functions.

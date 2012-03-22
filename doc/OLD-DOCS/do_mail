@@ -1,0 +1,6 @@
+mail -s "CircleMUD World Builders' Documentation (1/5)" $1 < database.doc
+mail -s "CircleMUD World Builders' Documentation (2/5)" $1 < dbsup.doc
+mail -s "CircleMUD World Builders' Documentation (3/5)" $1 < defs.doc 
+mail -s "CircleMUD World Builders' Documentation (4/5)" $1 < shop.doc
+mail -s "CircleMUD World Builders' Documentation (5/5)" $1 < values.doc
+

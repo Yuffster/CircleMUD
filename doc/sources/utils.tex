@@ -1,0 +1,158 @@
+\documentclass[11pt]{article}
+\usepackage{url}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+% This document typeset by Alex Fletcher <furry@circlemud.org> on Dec 9/2001
+
+\addtolength{\topmargin}{-.5in}       % repairing LaTeX's huge  margins...
+\addtolength{\textheight}{1in}        % more margin hacking
+\addtolength{\textwidth}{1in}         % and here...
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\setlength{\parskip}{\baselineskip}
+\setlength{\parindent}{0pt}
+
+\title{CircleMUD Utility Programs}
+\author{Alex Fletcher}
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document gives a brief summary of the various utility programs that come with the CircleMUD distribution.  The summaries include the description of the utility, how it is called, and any caveats to watch out for when using them.
+\end{abstract}
+
+\tableofcontents
+
+\section{Conversion Utilities}
+These utilities are generally one-time use utilities.  Some are for converting older CircleMUD data files to the versions used in CircleMUD v3, while others are used to convert currently existing files into different formats.
+\par
+Overall, these utilities have been created in an attempt to make the CircleMUD administrator's life a bit easier, and to give the administrator some ideas of further and more grandiose utilities to create.
+\par
+Please note that these utilities are not as rigorously tested as the rest of the CircleMUD server, and you should be certain to backup your data before using these utilities on it.  Also note that the code layout and design for these utilities is not as tight and as thought out as the rest of the source code distributed with CircleMUD.
+
+\subsection{play2to3}
+This utility is designed to convert player files from CircleMUD v2.20 to player files that will run under CircleMUD v3.  This utility is designed to be run once, at which point the player file will be one that the CircleMUD v3 server will understand.  It will not remove or overwrite the old player file when it runs.
+\par
+The code is not terribly attractive, but should also serve as a good base for converting your binary player files if you make any changes to the player file structure.
+\par
+The command line syntax for \texttt{play2to3} is as follows:
+\begin{verbatim}
+   play2to3 <old plrfile> <new plrfile>
+\end{verbatim}
+where \texttt{$<$old plrfile$>$} is the CircleMUD 2.20 player file, and \texttt{$<$new plrfile$>$} is the name of the new CircleMUD v3 player file.
+
+\subsection{shopconv}
+As discussed in the CircleMUD Building Guide, the format of shops changed between CircleMUD 2.20 and CircleMUD v3.  To make the transition easier, Jeff Fink submitted a shop conversion utility, \texttt{shopconv}.  Similar to the player file converter, this should only be run against any file once.  It is best to run this immediately before the initial v2.20 to v3 changeover.
+\par
+The command line syntax for \texttt{shopconv} is as follows:
+\begin{verbatim}
+   shopconv <file1> [<file2> .. <filen>]
+\end{verbatim}
+where \texttt{$<$file1$>$} is the first file to convert, \texttt{$<$file2$>$} the second, and so forth.
+
+\subsection{split}
+The split utility is designed to split large world files into smaller, zone-sized files that are easier to manage and maintain.  The utility reads its input from the standard input and writes the output to files with names specified within the larger world file.  This is done by inserting `\texttt{={\it filename}}' into the world file at the appropriate points, where {\it filename} is the name of the file for the following section.
+\par
+The command line syntax for \texttt{split} is as follows:
+\begin{verbatim}
+   split < [filename]
+\end{verbatim}
+where \texttt{[filename]} is the file to redirect into the utility.  The syntax above indicates how to do this on platforms that support command line redirection.
+
+\subsection{wld2html}
+This utility began its life as a small toy written by Jeremy Elson to put a CircleMUD world file on the world wide web.  It converts the world file into a series of HTML files, one per room, all named according to the virtual number of the room, and linked via their exits.
+\par 
+An example of its use on Midgaard can be found online at
+\url{<http://www.circlemud.org/~jelson/dikutest/>}.
+\par
+The command line syntax for \texttt{wld2html} is as follows:
+\begin{verbatim}
+   wld2html <wldfile>
+\end{verbatim}
+where \texttt{$<$wldfile$>$} is the world file to be turned into web pages.
+
+\section{Maintenance Utilities}
+\subsection{mudpasswd}
+The \texttt{mudpasswd} utility allows you to change the password of any player from the shell prompt.  It does not require any verification beyond the initial login to the shell account.
+\par
+The command line syntax for \texttt{mudpasswd} is as follows:
+\begin{verbatim}
+   mudpasswd <plrfile> <charname> <newpwd>
+\end{verbatim}
+where \texttt{$<$plrfile$>$} is your player file, \texttt{$<$charname$>$} is the name of the character to change the password for, and \texttt{$<$newpwd$>$} is the new password for the character.
+\par
+This utility must be recompiled if you make any changes to the player file structure.
+
+\subsection{purgeplay}
+This utility is used to purge {\em useless} players from the game's player file.  It is best to run this utility fairly regularly, but it should only be run when the CircleMUD server is not running.  It will delete all players that have had the \texttt{DELETED} flag set, except for those that also have the \texttt{NODELETE} flag set.
+\par
+The \texttt{purgeplay} utility will also remove idle players from the player file.  For example, any character with an invalid name, of level 0 (or less) or, of a level greater than \texttt{LVL\_IMPL} will be immediately marked for removal.  Level 1 characters that have not played for 4 days will be removed, as will characters of levels 2-4 that have not played for 7 days, levels 5-10 that have not played for 30 days, levels 11-30 that have not played for 60 days, and immortals that have not played for 90 days.
+\par
+The command line syntax for \texttt{purgeplay} is as follows:
+\begin{verbatim}
+   purgeplay <plrfile>
+\end{verbatim}
+where \texttt{$<$plrfile$>$} is your player file.
+\par
+This utility must be recompiled if you make any changes to the player file structure.
+
+\subsection{sign}
+This utility allows you to display some static text on a port when anyone connects to it.  This is useful when the mud server is moving, changing ports, or is down for maintenance.
+\par
+The command line syntax for \texttt{sign} is as follows:
+\begin{verbatim}
+   sign <port> <filename | - (for stdin)>
+\end{verbatim}
+where \texttt{$<$port$>$} is the tcp port to put the information on.  This is usually the same as the mud server port (when the server is not running), which defaults to 4000.  The \texttt{$<$filename$>$} is an ASCII file to display on the port when a connection is made to it.  If \texttt{-} is specified as a filename, the utility will wait for you to enter the text to be displayed and will take in all text until ended by an EOF marker (\texttt{ctrl}-D on Unix based systems).
+
+\section{Informational Utilities}
+\subsection{listrent}
+This utility allows you to view player rent files offline.  It displays the type of rent; {\em Rent}, {\em Crash}, {\em Cryo}, or lost link ({\em TimedOut}).  It also displays the object vnum and first keyword.
+\par
+The command line syntax for \texttt{listrent} is as follows:
+\begin{verbatim}
+   listrent <objfile1> [<objfile2> .. <objfilen>]
+\end{verbatim}
+where \texttt{$<$objfile1$>$} is the first object file to view, \texttt{$<$objfile2$>$} the second, and so forth.
+\par
+This utility must be recompiled if you make any changes to the rent file structure.
+
+
+\subsection{showplay}
+This utility is used to list the contents of the game's player file.  It gives a brief summary of the characters contained therein including their idnumber, sex, level, class, name, gold, and banked gold.
+\par
+The command line syntax for \texttt{showplay} is as follows:
+\begin{verbatim}
+   showplay <plrfile>
+\end{verbatim}
+where \texttt{$<$plrfile$>$} is the player file to summarize.
+\par
+This utility must be recompiled if you make any changes to the player file structure.
+
+\section{Internal Utilities}
+\subsection{autowiz}
+This utility is called from within the CircleMUD server and manages the self-updating Wizlist and Immlist.  At this point, it only works on Unix-based systems, but a solution for all other systems is being designed.  If you wish to change the text in the headers of the Wizlist or the Immlist, this is the utility to edit.
+\par
+The command line syntax for \texttt{autowiz} is as follows:
+\begin{verbatim}
+   autowiz <wizlev> <wizlistfile> <immlev> <immlistfile> [pid to signal]
+\end{verbatim}
+where \texttt{$<$wizlev$>$} is equal to whatever \texttt{LVL\_GOD} is set to in your CircleMUD server, \texttt{$<$wizlistfile$>$} is the filename for the file containing the game's Wizlist.  \texttt{$<$immlev$>$} should be set to your game's \texttt{LVL\_IMMORT}, while \texttt{$<$immlistfile$>$} is the name of the Immlist file.
+\par
+This utility must be recompiled if you make any changes to the player file structure.
+
+\subsection{delobjs}
+This utility is to be used in conjunction with the \texttt{purgeplay} utility.  It cleans out the rent files for players who no longer exist in the player file.  As with \texttt{purgeplay}, this should never be run when the CircleMUD server is running.  It is best not to run the \texttt{delobjs} utility on its own, and there is a script in the \texttt{lib/plrobjs/} directory called \texttt{purgeobjs} that should be used in its place.  This script will walk through each rent directory and check each and every file to ensure that all of the characters exist.
+\par
+The command line syntax for \texttt{delobjs} is as follows:
+\begin{verbatim}
+   delobjs <plrfile> <objfile1> [<objfile2> .. <objfilen>]
+\end{verbatim}
+where \texttt{$<$plrfile$>$} is the player file to search for non-existant players in, \texttt{$<$objfile1$>$} is the first rent file to check, \texttt{$<$objfile2$>$} is the second rent file to check, and so forth.
+\par
+This utility must be recompiled if you make any changes to the player file or rent file structure.
+
+
+\end{document}
+\end

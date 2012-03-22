@@ -1,0 +1,138 @@
+\documentclass[11pt]{article}
+\usepackage{url}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+% Document typeset from the original document that was typeset by Jeremy Elson.
+% This document typeset by Alex Fletcher <furry@circlemud.org> on Dec 9/2001
+
+\addtolength{\topmargin}{-.5in}       % repairing LaTeX's huge  margins...
+\addtolength{\textheight}{1in}        % more margin hacking
+\addtolength{\textwidth}{1in}         % and here...
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\setlength{\parskip}{\baselineskip}
+\setlength{\parindent}{20pt}
+
+\title{CircleMUD File Manifest}
+\author{}
+\begin{document}
+
+\maketitle
+
+The main `\texttt{circle/}' directory has the following subdirectories and files:
+
+\begin{verbatim}
+  README          - Information for the new CircleMudder
+  automaint       - shell script to perform maintenance .. see running.doc
+  autorun         - shell script to run the MUD .. see running.doc
+  bin/            - directory of all the compiled programs (binaries)
+  doc/            - documentation
+  lib/            - MUD data (playerfile, world files, etc.)
+  log/            - system logs
+  src/            - source code
+  syslog          - the current system log
+\end{verbatim}
+
+The \texttt{bin/} directory contains only binaries: `\texttt{circle}' (the main MUD) and its utilities, which are described in the CircleMUD Utility document.
+\par
+The \texttt{doc/} directory has its own \texttt{README} file, describing the contents of each of the documentation files.
+\par
+The \texttt{lib/} directory contains the following subdirectories:
+\begin{verbatim}
+  etc             - Files which the MUD uses internally (playerfile, mail, etc.)
+  misc            - Misc. database files meant to be changed (i.e. socials)
+  plrobjs         - Player object hierarchy and utility scripts
+  plralias        - Hierarchy for saved player aliases.
+  text            - Text files such as MOTD, news, help, etc.
+  world           - The world hierarchy
+\end{verbatim}
+
+The \texttt{lib/etc/} directory contains the following files (the MUD actively maintains these files while it is running; they should not be modified unless the game is down):
+\begin{verbatim}
+  Board.*         - Binary files with the contents of the bulletin boards
+  badsites        - List of banned sites
+  hcontrol        - Binary file with the state of the house control system
+  players         - Binary file containing data on all players
+  plrmail         - Binary file containing player mail
+\end{verbatim}
+
+The \texttt{lib/misc/} directory contains the following files:
+\begin{verbatim}
+  bugs            - Bugs reported by players with the 'bug' command
+  ideas           - Ideas from players from 'idea' command
+  messages        - Spell and skill damage messages
+  socials         - Text file with text of the socials
+  typos           - Typos reported by players with the 'typo' command
+  xnames          - Text file of invalid names
+\end{verbatim}
+
+The \texttt{lib/plrobjs/} contains the following files and directories:
+\begin{verbatim}
+  a-e  \
+  f-j   \
+  k-o    \ Subdirectories where player objects files are stored
+  p-t    /
+  u-z  /
+  zzz/
+  purgedir        - Script to purge an object dir (meant for use by purgeobjs)
+  purgeobjs       - Script to purge player objects (see utils.doc)
+  searchfor       - Script to search for objects in obj files (see utils.doc)
+\end{verbatim}
+
+The \texttt{lib/plralias/} contains the following directories:
+\begin{verbatim}
+  a-e  \
+  f-j   \
+  k-o    \ Subdirectories where player alias files are stored.
+  p-t    /
+  u-z  /
+  zzz/
+\end{verbatim}
+
+The \texttt{lib/text/} directory contains the following files:
+\begin{verbatim}
+  background      - Background story (for option 3 from main menu)
+  credits         - Text for 'credits' command
+  handbook        - Text for Immortal Handbook ('handbook' command)
+  help            - Text for 'help' command with no arguments
+  help_table      - File of all help entries for 'help' command
+  immlist         - Text for 'immlist' command
+  imotd           - Immortal MOTD -- seen by immortals on login
+  info            - Text for 'info' command
+  motd            - MOTD -- seen by mortals on login
+  news            - Text for 'news' command
+  policies        - Text for 'policy' command
+  wizlist         - Text for 'wizlist' command
+\end{verbatim}
+
+The \texttt{lib/world/} directory contains the following subdirectories:
+\begin{verbatim}
+  mob     - Contains *.mob files (mobile files)
+  obj     - Contains *.obj files (object files)
+  shp     - Contains *.shp files (shop files)
+  wld     - Contains *.wld files (world files)
+  zon     - Contains *.zon files (zone files)
+\end{verbatim}
+
+Each of the 5 subdirectories in the \texttt{lib/world/} directory also contains two additional files -- one called `\texttt{index}', which specifies which files in that directory should be loaded when the MUD boots, and `\texttt{index.mini}', which specifies which files should be loaded if the MUD is booted with the \texttt{-m} (mini-mud) option.
+\par
+The \texttt{log/} directory contains several files of the form \texttt{syslog.{\it n}}, where {\it n} is a small number.  These are the most recent CircleMUD syslogs.
+\par
+In addition, it contains the following more permanent system logs:
+\begin{verbatim}
+  badpws          - Records of bad password attempts
+  delete          - Players who have self-deleted
+  dts             - Players who have hit death traps
+  errors          - MUD system errors ("SYSERR" messages)
+  levels          - Records of all levels gained by all players
+  newplayers      - Records of the creation of new players
+  rentgone        - Players who have lost their items in rent
+  restarts        - List of times at which the MUD rebooted
+  rip             - Player deaths
+  usage           - Mud system usage (player load & memory usage info)
+\end{verbatim}
+
+The src directory contains all of the C and header files for the MUD, along with a \texttt{Makefile}.  The \texttt{src/util/} directory contains source for CircleMUD's utility programs.  See the Administering CircleMUD document for more information on how to compile the MUD.  See the CircleMUD Utility document for more information on how to use CircleMUD's utilities.
+
+\end{document}
+\end

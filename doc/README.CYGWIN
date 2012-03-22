@@ -1,0 +1,144 @@
+         Compiling CircleMUD under Microsoft Windows 95 or Windows NT
+                    using CygWin (formerly GNU-Win32)
+               by David Goldstein (goldstei@cs.sunysb.edu)
+
+CircleMUD compiles under version b19 or later of Cygnus Solutions'
+GNU-Win32 environment without needing any special modifications.  This free
+pseudo-Unix environment for Windows 95 and NT includes the "bash" shell,
+"gcc" family of compilers, and a full set of programs and libraries for
+Windows users to compile and run programs from source code intended for Unix.
+It can be downloaded from Cygnus' own servers or a number of mirror sites
+through http://sourceware.cygnus.com/cygwin/download.html.
+
+Compiling Circle under GNU-Win32 is basically the same as it would be under
+another form of Unix:
+
+1) Download and install full.exe from Cygnus' ftp server or one of the mirror
+   sites, if you haven't already.  It is a good idea to set the environment
+   variables for Cygwin in your startup sequence (autoexec.bat, etc.).
+
+   Note that there are show-stopping bugs in b19.0 and b20.0.  If you already
+   have one of these installed, be certain to upgrade to b19.1 or b20.1.
+
+2) Again, if you haven't already done so, mount the directory containing the
+   bulk of the executable Cygwin programs, C:\Cygnus\B20\H-i586-cygwin\bin
+   by default, as /bin, by typing
+        mount C:\Cygnus\B20\H-i586-cygwin\bin /bin
+   from a DOS prompt (NOT the bash shell).  You can check this by running
+   "mount" without any parameters, and checking for an entry for /bin.  Also,
+   make certain that the DOS path contains all of the correct backslashes.
+
+3) Download and uncompress the latest version of CircleMUD according to the
+   instructions in the main README file.  (The FTP site is ftp.circlemud.org,
+   in the pub/CircleMUD directory).  Make sure that if you have downloaded the
+   "zipped" version (circle30bplXX.zip, or example), that you use an unzip
+   program which can handle long file names to unzip it (like the Win32 version
+   of Info-Zip's "unzip").  Otherwise, download ther "tarred, gzipped" version
+   (circle30bplXX.tar.gz), and extract the files using the versions of tar and
+   gunzip which come with the full Cygwin package.
+
+4) Start the "bash" shell and go to the directory where you have extracted
+   CircleMUD (we will assume "C:\circle30bplXX", or "/circle30bplXX" from
+   within bash, where 'XX' is the current patchlevel).  DO NOT go into the
+   "src" directory yet.
+
+5) Run the shell script "./configure".  This will automatically detect
+   whether or not certain programs and library functions are available, and
+   create the files "Makefile" and "conf.h" based on the results.
+
+   If you get complains from bash that it will not run the configure script
+   either because it cannot find it or because of it claims the file is not
+   an executable, you can also try "sh configure", "sh ./configure",
+   "bash configure" and "bash ./configure" until one of them works.
+
+6) NOW change to the /circle30bplXX/src directory, and type "make", and watch
+   CircleMUD and the additional utilies included in the Circle distribution
+   automatically being compiled and placed in /circle30bplXX/bin. (Remember,
+   'XX' is the current patchlevel number, e.g., 'circle30bpl20'.)
+
+7) Make sure your TCP/IP stack is installed, correctly configured, and running.
+   If you are already using TCP/IP applications from your Windows machine such
+   as Netscape or telnet, then no changes should be necessary; otherwise go to
+   the Control Panel's "Network" settings, select "Add Protocol", and add
+   Microsoft's TCP/IP.  Consult the documentation for Windows 95 if you have
+   any additional questions about how to set up TCP/IP under Windows 95.  (Do
+   not send mail to me or Jeremy Elson on this topic.  Microsoft has an
+   excellent tech support line, and chances are that your ISP has a decent tech
+   support line too.)
+
+   YOU MUST INSTALL AND CONFIGURE YOUR TCP/IP STACK, EVEN IF YOU ARE NOT 
+   CONNECTED TO THE INTERNET.
+
+8) Go back to /circle30bplXX, and run the MUD either directly by typing
+   "bin/circle", or by using the "./autorun" script.
+
+9) Start a telnet program (SEE NOTE BELOW).  Open a connection to your
+   own machine ("localhost", or whatever the name of your machine happens
+   to be) on port 4000.  You should see the MUD's login screen welcoming
+   you and asking for your name.
+
+   VERY IMPORTANT NOTE:  The standard telnet program that comes free with
+   Windows 95 and NT does *not* work correctly for connecting to any MUD
+   because it does not support telnet's line-mode interface (so you can't
+   see what you are typing).  Note that simply turning on the "local echo"
+   option does not fix the problem; this prevents echo from being turned
+   off while you're typing your password, and screws up the display if you
+   try to hit the backspace key too many times.
+
+   Do not use Microsoft's telnet applet -- instead, use EWAN, CRT, zMUD, or
+   any other Winsock telnet application.  EWAN and CRT can be downloaded
+   from any number of sites (for example, www.windows95.com).  zMUD is an
+   excellent MUD client; for more information, see the official home page
+   at http://www.trail.com/~zugg/zmud.html.
+
+Known errata:
+
+1) CircleMUD cannot use the version of the crypt() function written by Andy
+   Piper and distributed by Sergey Okhapkin (http://miracle.geol.msu.ru/sos/).
+   If you have this "libcrypt.a" library installed, you need to disable it
+   prior to running "./configure".  I do not know if another version of crypt()
+   will work or not.  The problem manifests itself at runtime, when the program
+   tries to encrypt passwords, and results in a segmentation fault which will
+   crash the MUD.
+
+If you have problems, read this document again.  Most of the questions which
+Jeremy Elson receives in email or which are posted to USENET newsgroups are
+answered in this README file, or in other documents included in the CircleMUD
+distribution.  If you are still having problems and you're *sure* that this
+your question is not answered in this document or in one of the others files
+in the /circle30bplXX/doc directory, try reading the CircleMUD FAQ at
+ftp://ftp.circlemud.org/pub/CircleMUD/FAQ.  If all else fails, you can send me
+or Jeremy Elson mail for help.  Note, however, that if you ask me any question
+that is answered in these documents, all we'll do is mail you the appropriate
+file.
+
+Credit where credit is due:
+
+Some parts of this document have been derived or outright copied from other
+files in the CircleMUD distribution, including the files README and README.WIN
+by Jeremy Elson.
+
+-David Goldstein
+
+
+--- Additional items of note.
+
+* Make sure /bin points somewhere useful, like your
+  /cygnus/cygwin-b20/H-i586-cygwin32/bin directory.
+  If you didn't follow the directions given in #2
+  above, you can do the following command:
+
+  ln -s /cygnus/cygwin-b20/H-i586-cygwin32/bin /bin
+
+  Obviously you'll need to adjust the path if you
+  do not keep your installation in c:\cygnus.
+
+* Make sure /tmp exists.  You can either make it a
+  real directory or point it at the system temp
+  folder with:
+
+  ln -s /windows/temp /tmp
+
+(Information from Tony Robbins.)
+
+-George Greer

@@ -1,0 +1,63 @@
+* = done
+? = done?
+/ = in progress
+- = not started
+
+/ finish spells
+/ string sharing, or at least keyword sharing
+/ overhaul do_look and all related functions
+
+- fix affect_total
+- etext system
+- large buf freeing
+- more imm levs?????
+- randomized gold?
+- add new prompt system?
+- newbie command
+- fix process_output (see comment above it)
+
+? verify correctness of process_input
+
+* get_char_room_vis/get_char_vis and get_player_vis(0/1)
+* outdoor light
+* add page breaks to prac list
+* sort prac/spell list
+* add FAILURE to spells!!
+* fix floating point in current prompt system
+* add aliases
+* fix light bug
+* page background story
+* purge bug?
+* force room bug
+* spell word abbrev
+* god can unlock doors w/o key
+* fix loadroom
+* invis start bug
+* infrared bug
+* xnames bug
+* skillset/skillshow
+* new where & locate object
+* string!!!!!!!!
+* new guild code
+* anti-class flags
+* gen com comments
+* ascii flags??
+* act fix
+* turn off rent option
+* 0.person means 'PC'
+* class.c
+* debug houses
+* combine qsay/quecho
+* check on lock picking
+* change snoop to use descriptor instead of character
+* FIX the freaking buried magic number '11' in act.offensive.c
+* fix up prompts
+* change type of aff num to 16-bit or greater in playerfile
+* make 'player_specials_saved'
+* change stat to use spell names instead of numbers
+* line-by-line zone parsing
+* reply command
+* rewrite help system to use internal
+* make '! ras' work
+* fix the utilities, most of which are broken at the moment
+* all those mobs using player specials, you'll see them :)

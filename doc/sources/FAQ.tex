@@ -1,0 +1,612 @@
+\documentclass[11pt]{article}
+\usepackage{url}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{varioref}
+% Document typeset from the original document that was typeset by Alex Fletcher.
+% This document typeset by Alex Fletcher <furry@circlemud.org> on Dec 9/2001
+
+\addtolength{\topmargin}{-.5in}       % repairing LaTeX's huge  margins...
+\addtolength{\textheight}{1in}        % more margin hacking
+\addtolength{\textwidth}{1in}         % and here...
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\setlength{\parskip}{\baselineskip}
+\setlength{\parindent}{0pt}
+
+\title{Frequently Asked Questions (FAQ) for CircleMUD with Answers}
+\author{Alex Fletcher\\
+\texttt{$<$furry@circlemud.org$>$}}
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This file is intended to cover common questions related to the CircleMUD distribution source by
+Jeremy Elson \url{<http://www.circlemud.org/~jelson/>} and not general DikuMud questions.  Any contributions and corrections are more than welcome.  It is currently maintained by Alex Fletcher (aka Furry) \url{<furry@circlemud.org>} Please direct corrections to this address.  The original author was Ryan Watkins (aka VampLestat).\par
+More information about CircleMUD, including up-to-date versions of this documentation in ASCII and Postscript, can be found at the CircleMUD Home Page \url{<http://www.circlemud.org/>} or the FTP site \url{<ftp://ftp.circlemud.org/pub/CircleMUD/>}.
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction}
+\subsection{I've never played a MUD before.  What should I do?}
+Do not try to use your own copy of CircleMUD! There are two levels of MUD users: players and administrators.  Administrators do what you're trying to do now -- get a copy of a MUD's source code, compile it, and run it. Players use MUDs that are being administered by someone else.  If you try to actually run a MUD before you've ever played one, you'll get very confused indeed! Your best bet for now is to play someone else's MUD first.  There are a large number of excellent MUDs out there already, some of which are based on CircleMUD code.  A good place to start looking is the Mud Connector \url{<http://www.mudconnect.com/>}. The CircleMUD web server also has a smaller CircleMUD Site List \url{<http://www.circlemud.org/sites.shtml>}.
+
+\subsection{I'm new to C and/or coding. What do I do?}
+First, a Mud is not a learning project. It has thousands of lines to it many of which are obscure and unclear to even moderately skilled programmers. Those little, ``Hello, world,'' programs are for learning, maybe little math tests, etc. A Mud is a pretty ambitious project to start with. That is like trying to run before you can walk, and while there's more difficult things than a mud to start with, there's a ton of easier things you should start with.
+\par
+Second, if you are persistent, get a good C reference book and read the code, try to comprehend what everything is doing (to some small extent). You should probably avoid \texttt{comm.c} as it is home to the socket functions which general C books don't cover and are usually explained in other books on network programming.
+For some good resources to learn C, see Question 18.9 in the C FAQ \url{<http://www.eskimo.com/~scs/C-faq/top.html>}.
+\par
+Third, try small projects, something similar to what already exists. This way, you can get away with a cut-and-paste job and changing some of the code. Adding a simple version of races is not all that difficult, just examine the class code in \texttt{class.c} and the \texttt{CON\_QCLASS} block in \texttt{interpreter.c}, cut, paste, and modify. Also look at \texttt{structs.h}, for \texttt{\#define CLASS\_} You'll begin understanding more and more of the code as you copy and change it, eventually you'll be able to write a whole function by yourself. Spend time learning, going with haste will hurt you more than it will help you.
+\par
+Remember that if you attempt to run a mud without knowing how to program in C, you will fail.  Your mud will remain a stock mud, your friends will not play, and you will annoy off anyone you ask for help when you repeatedly show no drive to learn how to do it yourself.
+
+\subsection{I want to build my own mud.  Where do I start?}
+Many common questions arise from new mud admins.  It is a good idea to pay attention to them and take their answers to heart.  These include things like the following:
+\par
+{\em I don't have any coding experience with MUDs, but do have a lot of ideas for my own.  I have played many MUDs for a LONG time, though.}
+\par
+Read the FAQ.  Mud Experience doesn't help a huge amount.  Code experience does.
+\par
+{\em I am interested in having a level system of 1-50 mortal and 51-60 imms.  I am also interested in adding races and classes. How can I accomplish these things?}
+\par
+By checking the FTP Site under the contrib tree \url{<ftp://ftp.circlemud.org/pub/CircleMUD/contrib/>}.  Learn a lot from there.  Especially the \texttt{code/} subdirectory.  Above all, {\em know} the FAQ.
+\par
+{\em Also, is there anything that I should know about CircleMUD being a ``newbie'' to it?}
+\par
+See the above comment.
+
+\subsection{What is CircleMUD?}
+CircleMUD is a DikuMud derivative, developed by Jeremy Elson \url{<jelson@circlemud.org>}
+and is from the Gamma v0.0 of DikuMud created by Hans Henrik Staerfeldt, Katja Nyboe, Tom
+Madsen, Michael Seifert and Sebastian Hammer at DIKU (Computer Science Instutute at Copenhagen University).  Note that CircleMUD is a Diku derivative, so its users must follow the DIKU license agreement -- most notably that it cannot be used to make money in {\em ANY} way, the original developers' names must be in the login screen that the \texttt{credits} command always presents the same information, etc.\newline
+Quoting from CircleMUD's \texttt{release.doc}:
+\begin{quote}
+``CircleMUD is highly developed from the programming side, but highly UNdeveloped on the game-playing side.  So, if you're looking for a huge MUD with billions of spells, skills, classes, races, and areas, Circle will probably disappoint you severely.  Circle still has only the 4 original Diku classes, the original spells, the original skills, and about a couple dozen areas. On the other hand, if you're looking for a highly stable, well-developed, well-organized ``blank slate'' MUD on which you can put your {\em OWN} ideas for spells, skills, classes, and areas, then Circle might be just what you're looking for.''
+\end{quote}
+The latest full production release of Circle is 2.20, released on November 17, 1993.   Version 3.1, the result of the version 3.0 beta patchlevel stream was released on November 18, 2002.
+
+\subsection{What is the history of CircleMUD?}
+\begin{itemize}
+\item Version 2.00: July 16, 1993
+\item Version 2.01: July 20, 1993
+\item Version 2.02: Early August
+\item Version 2.10: September 1, 1993
+\item Version 2.11: September 19, 1993
+\item Version 2.20: November 17, 1993
+\item Version 3.1: November 18, 2002
+\end{itemize}
+
+\subsection{Where is the original CircleMUD so I can check it out?}
+CircleMUD is a public code base, freely distributable, but the authors of Circle do not actually run one personally.  There used to be CircleMUD, and while the CircleMUD group continues to develop it, there is no original CircleMUD any more.  To see other MUDs that are using the CircleMUD code base, check out the CircleMUD Site List \url{<http://www.circlemud.org/sites.shtml>}.
+
+\subsection{What is UNIX?}
+UNIX is not an operating system of itself, it's a type (flavour, if you will) of operating systems. Many different kinds of UNIXes exist. Some of them are free, some of them are not. How to tell if you have a UNIX operating system? Well, UNIXes have the `ps' command, tend to have a `\%' or `\#' prompt, give you a home directory, `who' will show who else is on the system, etc. Many UNIX systems (such as Linux) strive to be POSIX compatible, so you'll probably see POSIX mentioned, too. POSIX is, roughly, the standards which UNIX operating systems go by. It says what makes an operating system part of the UNIX family and so forth. Some UNIX operating systems are not 100\% POSIX compatible, actually, most aren't. The following are types of UNIX (but not all the existing flavours): Linux, FreeBSD, BSD, BSDi, Solaris. There are others. UNIX operating systems are command-based and Microsoft does not make a variant.
+
+\section{Resources}
+\subsection{Where do I find the source code for CircleMUD?}
+Circle's complete source code and areas are available for anonymous FTP at the CircleMUD FTP site \url{<ftp://ftp.circlemud.org/pub/CircleMUD/>}.  There is also a CircleMUD homepage \url{<http://www.circlemud.org/>} for more CircleMUD information.  The Ceramic Mouse \url{<http://developer.circlemud.org/>} presents an alternate interface to the FTP site.
+\par
+If you cannot use FTP or interact with the FTP server using Ceramic Mouse, you can contact one of the site maintainers \url{<circleftp@circlemud.org>} and request a file.
+
+\subsection{Where do I find areas, etc. for CircleMUD?}
+A number of CircleMUD based Implementors have submitted areas to the public and they are
+archived at the same site as the CircleMUD source \url{<ftp://ftp.circlemud.org/pub/CircleMUD/contrib/areas/>}.   There used to be a separate Code Snippet site, but that has since be rolled into the main FTP server to present everything in one central location.
+
+\subsection{I have questions about CircleMUD.  Where should I go?}
+If you have general questions about the MUD such as how to get it running, how to add new spells, how to add new skills, etc., the first place you should look is the documentation. `coding.doc' will have information about how to add new spells, skills, commands, etc.  `building.doc' has
+information about how to create new worlds, how to read the database files, etc. There are many other documents in the doc directory with useful information. 
+\par
+There is also a new project, started in June of 1996, called the CircleMUD Documentation Project \url{<http://www.circlemud.org/cdp/>} which will eventually be a repository for all Circle-related information.  It is still being built as of this writing, but hopefully will become a valuable resource as more documentation is added.
+\par
+If you still have questions {\em after} reading the documentation, you can try asking on the CircleMUD mailing list (see next section).
+\par
+If you have a question you think is too ``newbie'' for the mailing list, try the help database \url{<http://bugs.circlemud.org/>}.  You can ask questions by sending mail to the help administrators \url{<help@circlemud.org>}.  The webpage database is also, incidentally, where you should go to report bugs (also done by sending mail \url{<bugs@circlemud.org>}).
+
+\subsection{So, what's this about a mailing list?}\label{mailinglist}
+There is a CircleMUD mailing list for coders, builders, and administrators.  This list is for the discussion of CircleMUD, and not a place to learn C.
+\par
+To subscribe, send a message to the list server \url{<listserv@post.queensu.ca>} with a message body of \texttt{subscribe circle $<$first name$>$ $<$last name$>$}.
+\par
+To unsubscribe from the list send a message to the same address with the words \texttt{unsubscribe circle} as the message body. {\em DO NOT} send unsubscription requests to the list in general.  There are hundreds of people on the list, and it will only irritate a ton of people who have no power to remove you from the list.  Read the Mailing List FAQ \url{<http://qsilver.queensu.ca/~fletchra/Circle/list-faq.html>} for more information.
+
+\subsection{To what platforms has CircleMUD been ported?}
+Version 3.1 is very portable because it uses the GNU autoconf system, meaning you only need to type ``\texttt{configure}'' to have it automatically determine various features of your system and configure the code accordingly. 3.1 compiles without changes under most BSD and SVR4 systems, including SunOS, Solaris, Ultrix, IRIX, AIX, Linux, BSD/OS, HP/UX, Mac OS X, and others.
+\par
+Version 3.1 has also been ported to various non-UNIX platforms.  As of patchlevel 14, you can compile Circle under OS/2 2.x and 3.x with the OS/2 port of gcc, Windows 95/NT using Microsoft Visual C++ versions 4.0 through 6.0, Borland (now Inprise) C++ 4.5, Watcom v.11, Cygnus GNU-WIN32, LCC, Macintosh OS 9 (and earlier) with CodeWarrior, Amiga, and Acorn RiscOS.
+\par
+The older version of the code, Version 2.20, compiles mainly on BSD UNIX systems but has some trouble under SVR4-based systems such as Solaris.  The authors have personally compiled and tested v2.20 under Ultrix 4.0, IRIX 4.0.1, 4.0.4 and 4.0.5, SunOS 4.1.1 and 4.1.3, AIX 3.2, Linux 0.99.x and 1.0.x, and ConvexOS V10.2.  Users have reported that v2.20 compiles with relatively minor changes under NeXTStep 2.1 and 3.0, and HP/UX 9.0.
+\par
+Jean-Jack Riethoven \url{<J.J.M.Riethoven@ab.agro.nl>} ported CircleMUD version 2.20 to the Amiga and has contributed his code for version 3.0 of CircleMUD.  Questions about the Amiga source should be directed to Jean-Jack Riethoven, not the CircleMUD group.
+
+\subsection{How can I submit code or areas for use with CircleMUD?}
+There is a special uploads area \url{<ftp://upload.circlemud.org/pub/CircleMUD/incoming>}
+on the CircleMUD ftp server for submissions of code, areas, utilities, scripts, and anything else that might be of use to CircleMUD users.  When uploading anything, you should be certain to send a piece of email to the site maintainers \url{<circleftp@circlemud.org>} indicating what you uploaded, what it is, and where it should be placed. These portions of code or areas will probably not be added to the full release of CircleMUD unless you make specific arrangements with the CircleMUD group.
+
+\subsection{How do I use a patch file and how can I make one?}\label{patchfile}
+Patch files are created and used using the ``diff'' and ``patch'' utilities, respectively.  They can both be downloaded from the GNU FTP site \url{<ftp://ftp.gnu.org/pub/gnu/>} under the name ``diffutils-xxx.tar.gz''. There is also a port of these utilities for Microsoft Windows now available from the
+Cygnus GNU Win32 Project \url{http://sourceware.cygnus.com/cygwin/}.
+\par
+These are the various parameters to use with \texttt{diff} (all work in general on unix based systems, but check out the help entries to be certain.
+\begin{verbatim}
+  diff -wuprN [original_src_directory] [altered_src_directory] > Patch
+\end{verbatim}
+\texttt{-w} tells the output to ignore differences in spacing on the same line.\newline
+\texttt{-u} is the unified output. ie. it tells diff to output the text what is called ``patch'' style.  On some systems, you will have to use \texttt{-c} but it generates much larger and harder to follow patches.\newline
+\texttt{-p} tells diff to indicate what function is being ``patched'' in each section. This may not be supported by all versions of ``diff.''\newline
+\texttt{-r} is recursive, add r to the uN above if you want it to recursively add in any subdirectories.  (be careful with this one)\newline
+\texttt{-N} tells diff to treat files that are in one directory and not there in the other as being empty in the one they are not there.  It allows entire files to be included into the patch.\newline
+See the manpage for \texttt{diff} for other possible options including \texttt{-x} for excluding files.
+\par
+If you download a patch file and would like to add it to your code, first make sure to read any instructions that the patch author might have written.  The command used to add the patch may vary depending on how the patch was created. This should given in the first line of the patch or in the instructions.  Normally, if using GNU patch with a unified diff, the command should be:
+\begin{verbatim}
+        patch -u < [patchfile]
+\end{verbatim}
+If the patch was created with a SYSV patcher (i.e. not a unified diff), the patch should be added with:
+\begin{verbatim}
+        patch -c < [patchfile]
+\end{verbatim}
+Of course, if the instructions state otherwise, ignore any instructions given here and follow the instructions given with the patchfile instead.\newline
+Finally, in modern patches, there are three characters of interest to note:
+\begin{itemize}
+\item ! : The line changes between new and old.
+\item + : This line is added to the old to make the new.
+\item - : This line is removed from the old to make the new.
+\item The rest of the lines are just there to give you an idea of where to change.
+\end{itemize}
+
+\section{Compiling CircleMUD}
+\subsection{Why do I get many syntax errors with Sun's/HP-UX's ``cc'' compiler?}
+Because Circle is written in ANSI C, and the standard C compilers distributed by Sun and HP are not capable of compiling ANSI C code.  You can try the ANSI C compilers, but both cost extra money so your sysadmin may not have installed it.  Most don't.  The best solution is to get the GCC compiler from the GNU FTP site \url{<ftp://ftp.gnu.org/pub/gnu/>} and install it, if you have enough time and space.
+
+\subsection{Why do I get all sorts of errors with ``crypt'' functions and header files?}
+{\em (This information applies ONLY to Version 3 of the code.)} CircleMUD normally uses the UNIX \texttt{crypt()} function to encrypt players' passwords.  Because of export restrictions imposed by the U.S., some systems do not have the \texttt{crypt()} function. ``configure'' will usually be able to figure out whether or not your system has \texttt{crypt()}, but if it guesses incorrectly and you see problems with the \texttt{crypt()} function or headers, you can manually disable password encryption by going into the \texttt{sysdep.h} source file and uncommenting the line that reads:
+\begin{verbatim}
+        #define NOCRYPT
+\end{verbatim}
+Be warned, however, that doing this causes the MUD to store players' passwords in plain text rather than as encrypted strings.  Also, if you move from a system which has crypt to one that doesn't, players won't be able to log in with their old passwords! 
+
+\subsection{When I try to compile, why do I get a lot of undefined symbols referenced in comm.o for functions like socket, accept, and bind?}
+SVR4 systems require the socket and nsl libraries for network programs.  You shouldn't see this error any more with version 3 because ``configure'' should automatically use those libraries for you; however, if you still have problems, try adding ``-lsocket -lnsl'' to the line in the \texttt{Makefile} that links all the object files together into the `circle' binary. 
+\par
+If you're using V2.20 and you have this error, the best thing to do is simply to use V3.0 instead.  If you insist on using 2.20, go into the \texttt{Makefile} and search for the comment next to ``SVR4''.
+
+\subsection{Every time I try to compile Circle (or any other piece of software) under Linux, it gives me errors and says it cannot find include header files in the \texttt{linux/} and \texttt{asm/} directories.  What can I do?}
+Under Linux, you cannot compile any program unless you install the kernel source code because the kernel source includes the ANSI C header files.  You need the files in \texttt{/usr/include/linux/}, which are distributed separately from the rest of \texttt{/usr/include/}. 
+\par
+If your system does not have them already, you will have to set up your include files manually. The easiest way to get these is to download kernel source from one of the kernel.org mirrors
+\url{<http://www.kernel.org/mirrors/>}. Get the kernel source that matches the kernel you're running (type `uname -a' to find your kernel version).  Then unpack the kernel into the \texttt{/usr/src/} directory.  It is about 20 megabytes compressed, and about 60 megabytes uncompressed. 
+\par
+Read the \texttt{README} file that comes with the kernel, and make the symbolic links you need for \texttt{/usr/include/asm/} and \texttt{/usr/include/linux/}. Now compile the MUD.  This will take care of most of the errors.  You may have to do `make config' and `make dep' in \texttt{/usr/src/linux/} as well, in order to make \texttt{linux/config.h} and other files that get generated by these steps. 
+\par
+You can remove the whole kernel source tree except for \texttt{include/} at this point and get most of your space back. 
+\par
+(Thanks to Michael Chastain for providing this answer.)
+
+\subsection{I'm getting compilation errors from a header file, and I didn't even change it?}
+Okay, if you really didn't change ``\texttt{structs.h}'' then the error isn't in ``\texttt{structs.h}''.  We have seen numerous cases where this has happened, the first, is that the header file you included right before the header file messing has an error in it.  We can't really say much beyond that, but look for a missing semicolon, are any other errors you can find.
+\par
+If you include files out of order, it can mess things up.  For example, B.h has stuff in it that is defined in A.h, and if you include B.h before A.h, you can get errors, your best bet here is to mess with the order of the headers, making sure you put ``\texttt{conf.h}'' and ``\texttt{sysdep.h}'' at the top, followed by ``\texttt{structs.h}'', ``\texttt{utils.h}'', etc.  Any file specific headers should be the last one included just for coding style.
+
+\subsection{I'm trying to compile the mud on Windows '95 and am having problems, what can I do?}
+The first thing to do is to make sure you are compiling a recent version  of the source code.  Patch Level 11 and onwards all support Windows '95 winsock sockets now. Second, you should ensure that you have carefully read the \texttt{README.WIN} file for instructions on what to include.
+Next, ensure that you are using a C compiler that supports long filenames (for example, MSVC 4.0 does, MSVC 1.0 does not). If you happen to be trying to patch something into your code, you should use one of the Cygnus Tools mentioned in section~\vref{patchfile}.
+
+\subsection{How can I do a ``grep'' on Windows 95?}
+\begin{enumerate}
+\item Select ``start menu''-$>$``find''-$>$``files or folders''
+\item Enter the files/dirs to search in.
+\item Select ``Advanced''
+\item In the ``Containing Text'' input box, type in the text you want.
+\item Double click on a match to bring up the file that matched. 
+\end{enumerate}
+Even better is to use MSVC's find command (if you have it).
+
+\subsection{While compiling the mud, why do I get errors like ``foo.c:1231: Undefined symbol `\_whereamI' referenced from text segment''}
+You forgot to include a source file into the make.  Go edit your \texttt{Makefile} and make sure all the necessary *.c files are in there, in particular, whichever C file defines the function that the compiler is complaining is undefined.  If all else fails, try deleting all the *.o files and recompiling from scratch. 
+
+\subsection{What is a parse error and how do I fix it?}
+A parsing error is often a missing or extra semicolon, parenthesis, or bracket (\{). If the parse error is before a semicolon at the end of a line of code, it is something on that line. If it is at the beginning of a line within a function, it is usually a missing semicolon on the previous line. If it is at the beginning of a function, count your brackets (especially  the \{\} ones) in the previous function. I can't think of any other parse errors.  These are the ones I commonly see.  With a bit of practice, they are very easy to locate and fix.  For a more detailed explanation, check out the C Language FAQ \url{<http://www.eskimo.com/~scs/C-faq/top.html>}.
+
+\subsection{I have this piece of code that calls bcopy(), bzero(), and bcmp() and it won't compile, so what can I do?}
+All three of these functions are fairly standard on BSD systems.  However, they are not considered to be very portable, and thus should be redefined. For example, the equivalents for SYSV are: 
+\begin{verbatim}
+  #define bcopy(from,to,len)      memmove(to,from,len)
+  #define bzero(mem,len)          memset(mem,0,len)
+  #define bcmp(a,b,len)           memcmp(a,b,len)
+\end{verbatim}
+
+\subsection{My compiler doesn't have ``strdup()'', what can I do?}
+Use Circle's built-in \texttt{str\_dup()} function instead.
+
+\subsection{I am having trouble with my ``makefile'', what could be the problem?}
+If you used cut and paste to insert items into your makefile, it is likely that you accidentally put spaces at the beginning of lines where tabs are needed.  To check the tabs in your makefile, you can issue the \texttt{cat -v -t -e Makefile}, which will show all tabs as \texttt{\^I} and will show a \texttt{\$} at the end of each line to show any terminating white space. This is how the makefile must be constructed:
+\begin{verbatim}
+  foo.o: foo.c conf.h sysdep.h structs.h utils.h interpreter.h \
+    handler.h db.h
+  {TAB}$(CC) -c $(CFLAGS)
+\end{verbatim}
+To add these lines properly, you can use \texttt{gcc} to assist you with the following shell script (from Daniel Koepke):
+\begin{verbatim}
+  #!/bin/sh
+  gcc -MM $1 >> Makefile
+  echo "{TAB}\$(CC) -c \$(CFLAGS) $1" >> Makefile
+\end{verbatim}
+To use this script, replace \texttt{\{TAB\}} with a tab, and then run the script like: \texttt{add\_file foo.c}
+
+\subsection{How can I handle directories in C?}
+{\em Note that this seems only to be valid for UNIX OSes.} Handling of directories is accomplished through the \texttt{dirent.h} and \texttt{sys/types.h} files.  The function \texttt{opendir()} returns a ``DIR*'' pointer (it's like {\em but not the same as} the ``FILE *'' pointer) when you pass it the name of a directory to open or NULL if it can't open the dir.  After the directory has been opened, you can step through the files or search for particular files, etc. using \texttt{readdir()}, \texttt{seekdir()}, and \texttt{scandir()}.  When you reach the end of the directory list, you can either go back to the start with \texttt{rewinddir()} or close the directory with \texttt{closedir()}.  The following code (which has not been tested) should open a directory and go through it one by one and prints the filenames:
+\begin{verbatim}
+  struct dirent * ffile;
+  DIR * my_dir;
+
+  if (!(my_dir = opendir("foo")))
+    return;
+
+  while (1) {
+    if (!(dirent = readdir(my_dir)))
+      break;
+    printf("%s\n", dirent->d_name);
+  }
+
+  closedir(my_dir);
+\end{verbatim}
+The dirent structure contains only two useful elements, the file's name (\texttt{d\_name}) and the files length (\texttt{d\_reclen}).\newline
+Thanks to Daniel Koepke for the above.
+\par
+For Windows based machines (the Cygwin tools support the above code), the following code should be used instead:
+\begin{verbatim}
+#include <io.h>
+
+struct _finddata_t filedata;
+long fh;
+
+if( (fh = _findfirst( "*.*", &filedata )) == -1L ) {
+  printf( "No files in current directory!\n" );
+} else {
+  printf( "Listing of .c files\n\n" );
+  printf( " %-12s %.24s  %9ld\n",filedata.name, ctime( &(
+                filedata.time_write ) ), filedata.size );
+  while( _findnext( hf, &filedata ) == 0 ) {
+    printf( " %-12s %.24s  %9ld\n", filedata.name, ctime( &(
+                filedata.time_write ) ), filedata.size );
+  }
+  _findclose(hf)
+}
+
+/* note: filedata.attrib is a bitvector;
+  _A_ARCH               has the archive bit set (does nothing)
+  _A_HIDDEN             is hidden
+  _A_NORMAL             nothing to see here
+  _A_RDONLY             is read only
+  _A_SUBDIR             is a directory
+  _A_SYSTEM             is a system file (really does nothing)
+ ..
+   so if(filedata.attrib & _A_SUBDIR) {
+         print "File is a directory!\n";
+      }
+*/
+\end{verbatim}
+Please note that this is the file name without the path.  DOS oriented functions do not gracefully or consistently deal with directory options where the directory/file being accessed is not in the current working directory. You'll have to remember what it is! You can try other things .. but it {\em really} does not handle {\em relative} paths well using the \_[system function] set of functions.  The whole thing is rather ugly.
+\par
+Thanks for Patrick Dughi for the above.
+
+\section{Running CircleMUD}
+\subsection{I typed ``autorun'' but then my terminal just froze.}
+\texttt{autorun} is a script which automatically runs, logs, and reboots the game for long-term runs.  You should run autorun in the background by typing ``./autorun \&'' -- the MUD will start running in the background and you'll get the normal UNIX prompt back immediately (see section~\vref{loginprompt}). The game will then run unattended until you explicitly shut it down.
+\par
+On some systems, you may need to prepend ``nohup'' to the autorun command since some systems will kill off any processes left running when you leave the shell.
+
+\subsection{I typed ``bin/circle'' and got lots of boot messages, but then it said ``Entering game loop'' and froze.}
+It is not frozen, it is just waiting for people to connect.  You have to run the MUD in the background by typing ``bin/circle \&'' and then use telnet to connect to the game (see next section). 
+
+\subsection{Okay, I think the MUD is running but why don't I get a login prompt?}\label{loginprompt}
+In order to play the MUD, you must connect to it using the telnet command, i.e. ``telnet localhost 4000''. 
+
+\subsection{How come I get this error when running my mud: ``Error reading board: No such file or directory''}
+This is not a bad thing, all it means is that you have some boards on the mud and that it can't find the file for them.  Since it can't find the file, the mud will just create the file on the fly and use that, so the next time something is posted to the board, the files will exist. However, if you did have files for the boards and you are suddenly getting this error, it means that the board files have been deleted or something similar.
+
+\subsection{I just got this SIGPIPE, what is it and what can I do about it?}
+Often it appears that other people send your system SIGPIPEs when their connection is closed, in fact, it is not the person sending the SIGPIPE, it is your system.  The SIGPIPE is generated when your program attempts to write to descriptor which has no one listening to it.  This occurs if the character is sent a message by the mud after connecting, but before the socket is flagged with an exception or reads 0 bytes. By default, CircleMUD ignores these SIGPIPEs, with the line \texttt{my\_signal(SIGPIPE, SIG\_IGN)} in \texttt{signal\_setup()}.  Where most people see the problems with SIGPIPE is while debugging with GDB.  By default, GDB responds to a SIGPIPE by stopping the program, printing that a SIGPIPE was received, and passing it to the program.  You can change the action taken by GDB by using the `\texttt{handle}' command. To stop the program from stopping at SIGPIPE, you would give GDB the command `\texttt{handle SIGPIPE nostop}'
+
+\subsection{When I run Circle under Linux, it tells me ``gethostbyaddr: connection refused'' when the MUD boots, and then dies.  Why?}
+You need to make sure you have Networking and TCP/IP support compiled into your Linux kernel, even if you aren't actually connected to the Internet.  Generally the default install of Linux supports networking, so if you have done this, double check that the networking is installed as per your specific distribution, and otherwise seek further help from your distribution's official site.
+
+\subsection{When I run Circle under Windows, it tells me ``Winsock error \#10047'' when the MUD boots, and then dies.  Why?}
+You need to configure TCP/IP networking from the Network Control Panel, even if you are not connected to the Internet.  From the Network Control Panel, select ``Add Protocol'', and under the vendor ``Microsoft'', choose ``TCP/IP''.  It may ask you to insert your Windows CDROM in order to copy the drivers onto your hard drive.
+
+\subsection{When I run Circle under Windows, players can't rent -- their equipment is just dropped on the ground, syslogs don't work, so what is the problem?}
+The reason that objects aren't saved when your players quit is that certain unzip programs are buggy and don't completely recreate the MUD's directory structure (in particular, it doesn't create directories which have no files in them.)  This is fixed in Circle 3.0 patchlevel 12 and above.  Before patchlevel 12, you can fix it simply by manually creating the needed directories:
+\begin{verbatim}
+        cd \Circle30bpl11
+        cd lib\plrobjs
+        mkdir A-E
+        mkdir F-J
+        mkdir K-O
+        mkdir P-T
+        mkdir U-Z
+        mkdir ZZZ
+\end{verbatim}
+Object saving should then work.  It is also advised that you look at the {\bf AUTOEQ} option in \texttt{structs.h} for another possibility.
+\par
+The syslogs are a different story; no data is written to the system logs because the code currently is configured simply to write all errors to the standard error file
+descriptor (stderr), and Windows doesn't seem to let you redirect stderr to a file the same way UNIX does.  Patch level 12 and above allow you to direct logs to a specific file instead.
+
+\subsection{When someone logs on to my Windows MUD, the console screen gives: ``gethostbyaddr: No such file or directory''}
+This means the MUD can't resolve the IP address of the connecting player's source site into a hostname.  You probably don't have DNS correctly configured in the Windows Network Control Panel menu (under configuration of the TCP protocol).  Make sure you have the IP address of your ISP's DNS server listed.
+
+\subsection{My Mud crashed and my connection got closed.  What can I do?}
+Just because your connection got closed from the mud (for example, if you get too much information sent to you and the telnet session gets closed), this doesn't always mean that the game itself crashed.  Before reporting something as a crash bug, make sure that the game itself crashed, and above all, try to duplicate the circumstances before reporting it as a crash bug.  You can also try using gdb to find out why the mud is crashing if it gives you a core dump.
+
+\subsection{Ok, what's this ``gdb'' thing?}
+GDB has some online help, though it is not the best.  It does at least give a summary of commands and what they're supposed to do.  What follows is Sammy's short intro to gdb with some bug hunting notes following it:\newline
+If you've got a core file, go to your top circle directory and type:\par
+\texttt{$>$ gdb bin/circle lib/core}\newline
+If you want to hunt bugs in real time (causing bugs to find the cause as opposed to checking a core to see why the mud crashed earlier) use:\par
+\texttt{$>$ gdb bin/circle}\newline
+If you're working with a core, gdb should show you where the crash occurred.  If you get an actual line that failed, you've got it made.  If not, the included message should help.  If you're working in real time, now's the time to crash the mud so you can see what gdb catches.
+\par
+When you've got the crash info, you can type ``\texttt{where}'' to see which function called the crash function, which function called that one, and so on all the way up to ``\texttt{main()}''.\par
+I should explain about ``\texttt{context}''  You may type ``\texttt{print ch}'' which you would expect to show you the ch variable, but if you're in a function that doesn't get a ch passed to it (real\_mobile, etc), you can't see ch because it's not in that context.  To change contexts (the function
+levels you saw with where) type ``\texttt{up}'' to go up.  You start at the bottom, but once you go up, and up, and up, you can always go back ``\texttt{down}''.  You may be able to go up a couple functions to see a function with ch in it, if finding out who caused the crash is useful (it normally isn't).
+\par
+The ``\texttt{print}'' command is probably the single most useful command, and lets you print any variable, and arithmetic expressions (makes a nice calculator if you know C math).  Any of the following are valid and sometimes useful:
+\begin{verbatim}
+  print ch (fast way to see if ch is a valid pointer, 0 if it's not)
+  print *ch (prints the contents of ch, rather than the pointer address)
+  print ch->player.name (same as GET_NAME(ch))
+  print world[ch->in_room].number (vnum of the room the char is in)
+\end{verbatim}
+Note that you can't use macros (all those handy pseudo functions like \texttt{GET\_NAME} and \texttt{GET\_MAX\_HIT}), so you'll have to look up the full structure path of variables you need.
+\par
+Type ``\texttt{list}'' to see the source before and after the line you're currently looking at.  There are other list options but I'm unfamiliar with them.\newline
+(From Sammy \url{<samedi@cris.com>})\par
+For more information, you can try checking out the GDB Debugger manual \url{<http://www.circlemud.org/cdp/gdb/>}.
+
+\subsection{How can I hunt bugs more effectively?}
+There are only a couple of commands to use in gdb, though with some patience they can be very powerful.  The only commands I've ever used are:
+\begin{verbatim}
+run                     well, duh.
+print [variable]        also duh, though it does more than you might think
+list                    shows you the source code in context
+break [function]        set a breakpoint at a function
+clear [function]        remove a breakpoint
+step                    execute one line of code
+cont                    continue running after a break or ctrl-c
+\end{verbatim}
+I've run into nasty problems quite a few times.  The cause is often a memory problem, usually with pointers, pointers to nonexistent memory.  If you free a structure, or a string or something, the pointer isn't always set to NULL, so you may have code that checks for a NULL pointer that thinks the pointer is ok since it's not NULL.  You should make sure you always set pointers to NULL after freeing them.
+\par
+Ok, now for the hard part.  If you know where the problem is, you should be able to duplicate it with a specific sequence of actions.  That makes things much easier.  What you'll have to do is pick a function to ``break'' at.  The ideal place to break is immediately before the crash. For example, if the crash occurred when you tried to save a mob with medit, you might be able to ``break mobs\_to\_file''.  Try that one first.
+\par
+When you `medit save', the mud will hang.  GDB will either give you segfault info, or it will be stopped at the beginning of mobs\_to\_file.  If it segfaulted, pick an earlier function, like copy\_mobile, or even do\_medit.
+\par
+When you hit a breakpoint, print the variables that are passed to the function to make sure they look ok.  Note that printing the contents of pointers is possible with a little playing around.  For example, if you \texttt{print ch}, you get a hex number that shows you the memory location where ch is at.  It's a little helpful, but try \texttt{print *ch} and you'll notice that it prints the contents of the ch structure, which is usually more useful.  \texttt{print ch-$>$player} will give you the name of the person who entered the command you're looking at, and some other info.  If you get a \texttt{no ch in this context} it is because the ch variable wasn't passed to the function you're currently looking at.
+\par
+Ok, so now you're ready to start stepping.  When GDB hit your breakpoint, it showed you the first line of executable code in your function, which will sometimes be in your variable declarations if you initialized any variables (ex: int i = 0).  As you're stepping through lines of code, you'll see one line at a time.  Note that the line you see hasn't been run yet.  It's actually the {\bf next} line to be executed.  So if the line is \texttt{a = b + c;}, printing a will show you what a was before this line, not the sum of b and c.
+\par
+If you have an idea of where the crash is occurring, you can keep stepping till you get to that part of the code (tip: pressing return will repeat the last GDB command, so you can type step once, then keep pressing return to step quickly).  If you have no idea where the problem is, the quick and dirty way to find your crash is to keep pressing return rapidly (don't hold the return key or you'll probably miss it).  When you get the seg fault, you can't step any more, so it should be obvious when that happens.
+\par
+Now that you've found the exact line where you get the crash, you should start the mud over and step more slowly this time. What I've found that works really well to save time is to create a dummy function.  This one will work just fine:
+\begin{verbatim}
+  void dummy(void){}
+\end{verbatim}
+Put that somewhere in the file you're working on.  Then, right before the crash, put a call to dummy in the code (ex: \texttt{dummy();}).  Then set your breakpoint at dummy, and when you hit the breakpoint, step once to get back to the crashing code.
+\par
+Now you're in total control.  You should be looking at the exact line that gave you the crash last time.  Print {\bf every} variable on this line. Chances are one of them will be a pointer to an unaccessible memory location.  For example, printing \texttt{ch-$>$player.name} may give you an error.  If it does, work your way back and print \texttt{ch-$>$player} to make sure that one's valid, and if it isn't, try printing ch.
+\par
+Somewhere in there you're going to have an invalid pointer.  Once you know which one it is, it's up to you to figure out why it's invalid.  You may have to move \texttt{dummy()} up higher in the code and step slowly, checking your pointer all the way to see where it changes from valid to invalid. You may just need to NULL a free'd pointer, or you may have to add a check for a NULL pointer, or you may have screwed up a loop.  I've done all that and more.
+\par
+Well, that's it in a nutshell.  There's a lot more to GDB that I haven't even begun to learn, but if you get comfortable with print and stepping you can fix just about any bug.  I spent hours on the above procedure trying to get my ascii object and mail saving working right, but it could have taken weeks without gdb.  The only other suggestion I have is to check out the online gdb help.  It's not very helpful for learning, but you can see what commands are available and play around with them to see if you can find any new tools.
+\par
+(From Sammy \url{<samedi@cris.com>})
+
+\subsection{I just added n levels to my mud (from the stock 34).  How do I set my imp's up to level n without a pfile wipe?}
+You can write a quick and nasty function that will advance your imp (and imp only) to the max level (LVL\_IMPL).  This can be done with a quick idnum check so that only the original player (the first imp, he with id 1) can use the command to get to maximum level. 
+\begin{verbatim}
+ACMD(do_upme)
+{
+  if (GET_IDNUM(ch) != 1) {
+    send_to_char("You think IMP positions are that easy to come by? "
+                 "Go Figure...\n\r", ch);
+  } else {
+    GET_LEVEL(ch) = LVL_IMPL;
+    send_to_char("Advanced.\n\r", ch);
+  }
+}
+\end{verbatim}
+Remember that you will need to prototype it and add a call to it into the command table, but that is left as an exercise to the reader.
+
+\subsection{I decided to wipe my pfile away anyway.  What steps should I take to do this?}
+In order:
+\begin{enumerate}
+\item Shutdown the mud with ``shutdown die'' so that it won't restart.
+\item Remove the player file, \texttt{lib/etc/players}
+\item Restart the mud and login to recreate your imp character.
+\end{enumerate}
+You should probably also remove files in \texttt{plrobjs}, unless you want the recreated characters to come back with the same equipment they had when they were deleted.
+
+\subsection{I want to expand the ability to pk in my MUD, allowing ASSASSINS that'll be able to PK without getting flagged.  How can I do this?}
+The simple way to do this is to find all the ``pk\_allowed'' checks and replace them with a \texttt{can\_murder(ch, vict)} function call.  Prototype the function in \texttt{utils.h}.  Then, in \texttt{utils.c}, create a \texttt{can\_murder()} function something like this: 
+\begin{verbatim}
+int can_murder(struct char_data *ch, struct char_data *victim) {
+  if (pk_allowed == TRUE)
+    return TRUE;
+  if (IS_NPC(ch) || IS_NPC(victim))
+    return TRUE;   /* you can always kill these */
+  if (PLR_FLAGGED(ch, PLR_ASSASSIN))
+    return TRUE;   /* they can kill anyone */
+  /* Add further checks here */
+}
+\end{verbatim}
+
+\subsection{Why does it say ``Connection closed by foreign host.'' and not display the ``Byebye!'' message I'm trying to send before cutting someone off?}
+This usually happens if you are doing something like this:
+\begin{verbatim}
+  send_to_char("Bye bye.  Come back soon, ya hear?", ch);
+  close_socket(ch->desc);
+\end{verbatim}
+The \texttt{close\_socket} immediately dispatches/closes the connection, while \texttt{send\_to\_char} puts the message on the output queue to be dispatched next
+\texttt{game\_loop} cycle. Therefore, the socket is gone.  On some systems (i.e., old linux), this can even cause a infinite loop attempting to write to a closed socket. The proper way of doing this and other ``Byebye'' messages is to set the CON state of the player to CLOSE, like this:
+\begin{verbatim}
+  send_to_char("Bye bye.  Come back soon, ya hear?", ch);
+  STATE(ch->desc) = CON_CLOSED;
+\end{verbatim}
+This will then cycle to the next \texttt{game\_loop}, dispatch the output queues (therefore sending the byebye message) and then close the socket. Further note, in some bizarre cases, this only seems to send about 40 characters and no escape codes.  Sending more than 40 characters or escape codes (like the clear screen sequence) will crash the process reporting a problem similar to writing to a closed socket. 
+
+\subsection{I run my mud on a unix system and the pfile/rent file works great, but on my home system it's all screwed up.  What gives?}
+Some operating systems write binary data least-significant-digit-first, while others write it most-significant-first (big endian vs. little endian). Moving player files, rent files, mail files, and board files from one of these systems to the other will result in corrupted files.  The solutions to this problem include:
+\begin{itemize}
+\item Don't bother trying to move those files.
+\item Edit your code to always write in one format.
+\item Develop a binary to ascii conversion tool (and ascii to binary) for all binary files.
+\item Develop an ascii read/write system to allow portability.
+\end{itemize}
+Some ASCII systems for objects, boards, and player files have been designed and are available on the CircleMUD FTP server \url{<ftp://ftp.circlemud.org/>} in the contributions section.  There are also plans for future versions of CircleMUD to remove all binary based files.
+
+\subsection{How do I get the CircleMUD to autoload when the Unix server is restarted?}
+In \texttt{/etc/rc.d/rc.local} find where things like sendmail and (maybe) gpm are started.  Add something like:
+\begin{verbatim}
+        cd /home/mudlogin/circlebpl15/
+        su mudlogin -c ./autorun &
+        cd
+\end{verbatim}
+Of course, change the ``\texttt{mudlogin}'' to whatever the name of the account is that normally has control of the mud, and change the path in the first \texttt{cd} to wherever the mud is run from.\newline
+For more info: \texttt{man su}
+
+\subsection{My server shuts down my MUD every time I logoff. How do I keep the MUD running when I logoff?}
+Instead of typing ``\texttt{autorun \&}'' to start the autorun script (which starts and keeps the mud running), type ``\texttt{nohup autorun \&}''. Running the autorun via nohup will keep the script and the MUD running when you logoff of the server. For more information type ``\texttt{man nohup}'' at the prompt on your server.
+
+\section{Code Changes for CircleMUD 2.20}
+\subsection{How do I fix the bug where people can junk more coins than available?}
+Apparently in Circle 2.2, you can drop any amount of coins, and then be rewarded with more coins than you had in the first place.  Here is the fix from Jeremy Elson:\newline
+Around line 480 of \texttt{act.obj1.c}, you will find the code:
+\begin{verbatim}
+        if (!str_cmp("coins", arg) || !str_cmp("coin", arg))
+           perform_drop_gold(ch, amount, mode, RDR);
+        else {
+           /* code to drop multiple items.  anyone want to write it? -je */
+           send_to_char("Sorry, you can't do that (yet)...\n\r", ch);
+-->        return;
+        }
+        ....
+\end{verbatim}
+It should be changed to:
+\begin{verbatim}
+        if (!str_cmp("coins", arg) || !str_cmp("coin", arg))
+           perform_drop_gold(ch, amount, mode, RDR);
+        else {
+           /* code to drop multiple items.  anyone want to write it? -je */
+           send_to_char("Sorry, you can't do that (yet)...\n\r", ch);
+        }
+-->     return;
+        ....
+\end{verbatim}
+
+\subsection{How do I fix the ``vstat'' bug that crashes the MUD?}
+To the fix for the vstat bug, from Jeremy Elson:
+\par
+In the file act.wizard.c, in the function \texttt{do\_vstat}, in the mobile section of the switch (around line 1150), you'll find the code: 
+\begin{verbatim}
+        mob = read_mobile(r_num, REAL);
+        do_stat_character(ch, mob);
+        extract_char(mob);
+\end{verbatim}
+Add the line \texttt{char\_to\_room(mob, 0)} before \texttt{extract\_char()}, like this:
+\begin{verbatim}
+        mob = read_mobile(r_num, REAL);
+        do_stat_character(ch, mob);
+        char_to_room(mob, 0);
+        extract_char(mob);
+\end{verbatim}
+
+\subsection{ How do I fix the ``wizlock'' bug that lets lower immortals lock out higher immortals?}
+Simple, insert this code into `\texttt{do\_wizlock()}' in `\texttt{act.wizard.c}':
+\begin{verbatim}
+        if (value < 0 || value > LEVEL_IMPL) {
+           send_to_char("Invalid wizlock value.\n\r", ch);
+           return;
+        }
+
++       /*   Do not allow people to wizlock above their level.
++        *   This bug came with Circle 2.20 source -- VampLestat
++        */
++       if (value > GET_LEVEL(ch)) {
++          send_to_char("You may only wizlock below your level.\n\r", ch);
++          return;
++       }
+        restrict = value;
+\end{verbatim}
+
+\subsection{ How do I fix the ``mudlog'' bug that lets people see me log in, even if I'm wizinvis?}
+For all the mudlog calls for entering the game, quitting, and so forth, you must change
+\begin{verbatim}
+        mudlog(MAX(LEVEL_IMMORT, ...
+\end{verbatim}
+to
+\begin{verbatim}
+        mudlog(MAX(GET_LEVEL(i), ...
+\end{verbatim}
+where ``i'' is either ``ch'' or ``d-$>$character'' depending on the call.
+
+\section{CircleMUD 3.1 Questions}
+\subsection{Are there any bugs in the current release?}
+There are no bugs.  Only features.  Seriously though, if perchance you find a bug, please mail it (along with a possible fix) to \url{<bugs@circlemud.org>} the bugs database \url{<bugs@circlemud.org>} and the CircleMUD list.  Once in the bug database, it will be routed to the correct person.  Note that no confirmation is sent back automatically.  You can view the status of the bug at the bugs database \url{<http://bugs.circlemud.org/>}.
+ 
+\subsection{How do I access Online Creation?}
+Online Creation is not yet part of the Circle release. When it does become part of the release, it'll be accessed through a command called olc. OLC will probably be in a future release. In the mean time, check out the CircleMUD FTP server \url{<ftp://ftp.circlemud.org/pub/CircleMUD/contrib/olc/online/>}.
+
+\subsection{How does the new bitvector system work?}
+The new bitvector system in CircleMUD 3.0 is an ascii based one. The old numeric values can still be used, but the new system should make sorting flags out substantially easier.  The system uses an ``a'' as the value for 1, ``b'' for 2, ``c'' for 4, ``d'' for 8, etc.  Once ``z'' is reached, the next letter in sequence is ``A''.  Detailed information about how to use bitvectors with CircleMUD can be found in the CircleMUD Building Manual \url{<http://www.circlemud.org/cdp/building/>}.
+
+\subsection{When will the production release of Circle 3.1 be?}
+It's out.  The following release? I don't know.  Don't ask again. If you must have bleeding edge stuff, check out the CVS snapshot \url{<ftp://ftp.circlemud.org/pub/CircleMUD/cvs/>} if you do not want to set up an anonymous CVS account.  Don't ask when the next CVS snapshot will be, we'll do it when we have some changes worth it.
+\par
+There is anonymous read-only access available for the CVS repository.  You can access this from your own server (assuming that you also have CVS installed on your machine.  To connect to the CircleMUD CVS repository, you need to issue the following commands at your shell prompt:
+\begin{verbatim}
+  setenv CVSROOT :pserver:cvs@cambot.circlemud.org:/home/circledb/cvs
+  cvs login
+       (password = cvs)
+  cvs checkout circle
+\end{verbatim}
+
+\subsection{If someone logs in and just sits at the password prompt, the MUD hangs (i.e., no one else can connect or do anything) until the person enters their password.}
+Your system's POSIX non-blocking I/O might be broken.  Look in the source file \texttt{sysdep.h} at the comment above the line that says ``\texttt{\#define POSIX\_NONBLOCK\_BROKEN}'' for a possible fix. Once this is done, recompile the mud and try again.  If you use the \texttt{POSIX\_NONBLOCK\_BROKEN} constant and it fixes your problem, please send mail to the bugs database \url{<bugs@circlemud.org>} and let us know exactly what kind of system you are using and what you had to do to fix it. 
+
+\subsection{Why does CircleMUD use BUF switches all through the code, what's happening here?}
+From Jeremy:
+\par
+This code is the new output buffering system that I wrote for Circle in the early (non-released) beta versions of 3.0.  The old DikuMud code for queueing output (which stayed with Circle until version 2.20) was memory- and time-inefficient in many cases (and, in my opinion, was inefficient for the normal behavior of most MUDs).
+\par
+First, I should explain what output queueing is and why it is necessary.  On each pass through the \texttt{game\_loop()}, the MUD performs a number of steps: check to see if there are any new players connecting, kick out people with bad links, read input over the network for all players, then process the input for each player that has sent a complete line over the net.  The processing step is usually where output is generated because it is where MUD commands are processed (e.g., ``kill'' might generate output of ``Kill who?'')  When output is generated, it is not immediately sent out to the player, but instead queued for output in a buffer.  After all players' commands are processed (and each command generates the appropriate output for various players), the next step of the \texttt{game\_loop()} is to send all the queued output out over the network.
+\par
+The new output system that Circle now uses allocates a small, fixed size  buffer (1024 bytes) for each descriptor in which output can be queued. When output is generated (via such functions as \texttt{send\_to\_char()}, \texttt{act()}, etc.), it is written to the fixed size buffer until the buffer fills. When the buffer fills, we switch over to a larger (12K) buffer instead. A ``buffer switch'', therefore, is when the 1024-byte fixed buffer overflows.
+\par
+When a large (12K) buffer is needed, it is taken from a pool of 12K buffers that already been created.  It is used for the duration of that pass through the \texttt{game\_loop()} and then returned to the pool immediately afterwards, when the output is sent to the descriptor.  If a large buffer
+is needed but none are in the pool, one is created (thereby increasing the size of the pool); the ``\texttt{buf\_largecount}'' variable records the current pool size. 
+\par
+If a player has {\em already} gone from their small to large buffer, and so much output is generated that it fills even the large buffer, the descriptor is changed to the overflow state, meaning that all future output for the duration of the current pass through the game loop is discarded.  This is a buffer overflow, and the only state in which output is lost.
+\par
+Now that I've described how the system works, I'll describe the rationale.  The main purpose for the two-tiered buffer system is to save memory and reduce CPU usage.  From a memory standpoint: Allocating a fixed 12K buffer for each socket is a simple scheme (and very easy to code), but on a large MUD, 100 12K buffers can add up to a lot of wasted memory.  (1.2 megs of memory used for buffering on a 100-player MUD may not seem like very much, but keep in mind that one of Circle's big selling points several years ago, when memory was expensive, was that it had a very small memory footprint (3 or 4 megs total!)  And from a CPU standpoint: the original DikuMud used a dynamically allocated buffer scheme to queue output, which unfortunately meant that for {\em each} player, on {\em each} pass through the game loop, dozens of tiny buffers (often one for every line of output, depending on the code to execute the command) were allocated with \texttt{malloc()}, {\em individually} written to the system using individual calls to \texttt{write()}, and then \texttt{free()}'d.  My system saves hundreds or thousands of calls per second to \texttt{malloc()} and \texttt{free()}, and reduces the number of system calls {\bf drastically} (to at most one per player per pass through the game loop).
+\par
+The trick is to choose the size of the small and large buffers correctly in order to find the optimal behavior.  I consider ``optimal'' to mean that 90\% of the time, most players stay within the limits of their small buffer (for example, when wandering through town or mindlessly killing some monster while watching damage messages go by).  Hopefully, a large buffer switch is only necessary when a player executes a special command that generates an unusually large amount of output, such as ``who'', ``read board'', or ``where sword''.  This critically depends on the fact that not everyone will be executing such a special large-output command at the same instant.
+\par
+For example, imagine you have 10 players on your MUD.  They are all wandering around town, and every once in a while one of them types ``who'', or reads the board, meaning that they are seeing more than 1024 bytes of output at a time.  On such a MUD, I would hope that there would only be a {\em single} 12K buffer allocated which gets passed around among all the 10 players as needed.  Now, all players think they can queue up to 12K of output per command without getting truncated even though only one 12K buffer actually exists -- they are all sharing it.
+\par
+But - there's a problem with this.  There are certain cases when {\em many} players have to see a lot of output at the same instant (i.e. on the {\em same} pass through the \texttt{game\_loop()}), all of them will need a large buffer at the same time and the pool will get very big.  For example, if
+an evil god types ``force all who''; or if the MUD lags for several seconds, then suddenly gets unlagged causing many commands to be processed at the same moment; or if 20 people are all trying to kill the same MOB and are all seeing 20 damage messages (more than 1024 bytes) on the same pass through the \texttt{game\_loop()}.
+\par
+Unfortunately, the current patchlevel of Circle has no way to destroy large buffers so such cases are pathological and cause wasted memory.  Unfortunately since I don't run a MUD I can't actually tell how often this happens on a real MUD.  (If there are any IMPs out there who run large MUDs (say, $>$= 30-50 players on regularly), and you've read this far, please send me the output of ``show stats'' after your MUD has been played for at least several hours.) 
+\par
+Hopefully this clears up the way buffers work.
+
+\subsection{How do I add a new class?  How do I add more levels?}
+Adding a new class is fairly easy in 3.1, in fact, the \texttt{coding.pdf} has a section on doing just this.  In addition, someone has taken the time to put together a fairly complete document on adding a class, in this case a Knight class. The \texttt{class.txt} is available on the FTP site \url{<ftp://ftp.circlemud.org/pub/CircleMUD/contrib/docs/3.x/class.txt>}.
+
+\subsection{Are there a complete documents?}
+Yes and no.  We have done our best to provide documentation that is as complete as possible, but it is impossible to have complete and perfect documentation.  
+\par
+Further information on CircleMUD can be found in other documents in the docs directory, on the CircleMUD webpages \url{<http://www.circlemud.org/>}, on the FTP server \url{<ftp://ftp.circlemud.org/>}, and on the CircleMUD Mailing List (see section~\vref{mailinglist}).
+\end{document}
+\end

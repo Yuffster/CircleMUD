@@ -1,0 +1,34 @@
+This directory contains documentation on various aspects of the game.
+
+Area builders will be most interested in database.doc, dbsup.doc, defs.doc,
+shop.doc, and values.doc.  These five files can be mailed automatically
+with the "do_mail" script in this directory.  do_mail takes the recipient
+as its only command-line argument.  For example, to mail the documentation
+to CircleMUD's author, you'd type "do_mail jelson@cs.jhu.edu".
+
+CONTENTS:
+--------
+
+COLOR.DOC	- Programmer's manual on how to use color codes
+COMM.DOC	- The game-to-player communications system, most importantly
+		  the act() procedure
+DATABASE.DOC	- The format of the most important data files
+DBSUP.DOC	- Detailed information on each field in database.doc
+DEFS.DOC	- Important document on what rules should be followed
+		  when creating a part of the world, to avoid complete chaos
+HACKER.DOC	- Insight into the art & science of programming (courtesy MERC)
+HANDLER.DOC	- Descriptions of most of the basic 'database handling'
+		  procedures, found in handler.c
+LICENSE.DOC	- The conditions under which this game is distributed
+		  NOTE: THIS FILE MUST ALWAYS BE PRESENT
+RELEASE.DOC	- CircleMUD release history
+RUNNING.DOC	- Directions for compiling, running, and maintaining the game
+SHOP.DOC	- Describes how to create a shop file
+SOCIALS.DOC	- Description of the 'social action' system
+SPELL_INFO.DOC	- Doc on spells, especially how damage is calculated
+SPELLS.DOC	- Info on the spell/affection system
+TIME.DOC	- How time is in DikuMud compared to real world
+UTILS.DOC	- Description of the CircleMUD maintenance utilities
+VALUES.DOC	- The 4 generic values for items, described in detail
+WIZHELP.DOC	- Description of all god commands
+

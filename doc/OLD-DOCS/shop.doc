@@ -1,0 +1,243 @@
+/* ************************************************************************
+*  Copyright (C) 1990, 1991 - see 'license.doc' for complete information. *
+************************************************************************* */
+
+
+NEW FORMAT:
+CircleMUD v3.0 now has a new shop file format.  Since the old format
+is still compatible, I've kept the old documetation at the end of
+this file.  If you'd like to convert shop files in the old format to that
+of the new format, compile and run the utility shopconv.  When writing new
+files, you need to tell CircleMUD that the shopfile is in the new format
+by including the following line BEFORE any shops in the file:
+
+CircleMUD v3.0 Shop File~
+
+The rest of the file is formatted as follows:
+
+#<num>~
+  Shop Number (Used only for display purposes)
+
+
+<num 1>
+<num 2>
+<num 3>
+  .
+  .
+  .
+<num n>
+-1
+  These numbers refer to the objects the shop produces.  The numbers are
+  virtual numbers.  The list MUST end with a -1.
+
+<Profit when selling>
+  The object value is multiplied by this value when sold. This is a
+  floating point value. Must be >= 1.0
+
+<Profit when buying>
+  The object value is multiplied by this value when bought. This is a
+  floating point value. Must be <= 1.0
+
+<type 1>  [namelist 1]
+<type 2>  [namelist 2]
+<type 3>  [namelist 3]
+  .
+  .
+  .
+<type n>  [namelist n]
+-1
+  These lines contain the types of items that the shop will buy.  The first
+  argument, called "type" is the type of item (see dbsup.doc).  Numerical,
+  or english forms are valid (5 or WEAPON, 9 or ARMOR, etc)  In addition,
+  you can provide optional keywords to give specific keywords that must
+  be present on the item.  For further details on these expressions, see the
+  notes following the new file format.  This list must be terminated by a -1.
+
+<Message When Item to buy is non existing>~
+<Message When item trying to sell is non existing>~
+<Message When shop does not buy offered item>~
+<Message when shop can't afford item>~
+<Message when player can't afford item>~
+<Message when buying an item>~
+  Price is %d
+<Message when selling an item>~
+  Price is %d
+
+<Temper>
+  When player can't afford an item, the shopkeeper tells them they
+  can't afford the item and then:
+	0 - The shopkeeper pukes on the player.
+	1 - The shopkeeper smokes his joint.
+	other - No action besides message above.
+
+<Bitvector>
+  Allows you to set certain values for the shop.
+	WILL_START_FIGHT        1	/* Players can attack shopkeeper     */
+	WILL_BANK_MONEY         2	/* Shopkeeper puts money > 15000
+					   into the bank		     */
+
+  A brief note:  Shopkeepers should be hard (if even possible) to kill.
+  The benefits players can receive from killing them is enough to unbalance
+  most non monty-haul campaigns.
+
+<Shop Keeper Mobile Number>
+  Virtual number of the shopkeeper.
+
+<With Who>
+  Designate certain alignments or classes that the shop will not
+  trade with.  To determine this value, choose all elements on
+  the list below that you do not want sold to, and add their values.
+
+	TRADE_NOGOOD            1
+	TRADE_NOEVIL            2
+	TRADE_NONEUTRAL         4
+	TRADE_NOMAGIC_USER      8
+	TRADE_NOCLERIC          16
+	TRADE_NOTHIEF           32
+	TRADE_NOWARRIOR         64
+
+<Room 1>
+<Room 2>
+<Room 3>
+   .
+   .
+   .
+<Room n>
+-1
+  The virtual numbers the mobile must be in for the shop to be effective.
+  (So trans'ed shopkeepers can't sell in the desert).  The list must be
+  terminated by a -1.
+
+<Time when open start 1>
+<Time when open end 1>
+   The hours between which the shop is open.
+
+<Time when open start 2>
+<Time when open end 2>
+   The hours between which the shop is open.
+
+
+ITEM NAME LISTS:
+
+Name lists are formed by boolean expressions.  The following operators
+are available:
+
+		',^ = Not		*, & = And	+, | = Or
+	
+The precedence is Parenthesis, Not, And, Or.  For example, the following line:
+
+WEAPON [sword & long|short | warhammer | ^golden & bow] & magic
+
+This shop will buy the following items of type WEAPON:
+	1)	sword long magic
+	2)	short magic	    (the first & is done before the first | )
+	3)	warhammer magic
+	4)	^golden bow magic
+
+Note that the ^ in front of golden affects ONLY golden, and nothing else
+in the listing.  Basically, the above expression could be written in
+english as:
+
+[(sword and long) or short or warhammer or (not golden and bow)] and magic
+
+If I wanted the shop to only buy "short magic" only if they were also swords,
+I would have to change the expression to:
+
+WEAPON [sword & (long|short) | warhammer | ^golden & bow] & magic
+                ^-Changes--^ 
+
+You can also include object extra flags (listed in dbsup.doc).  The previous
+example used "magic" as a keyword that had to be on the object.  If we wanted
+to make it so that the MAGIC flag had to be set on the item, we would change
+"magic" to "MAGIC."  Similar changes could be made to add other flags such as
+"HUM" or "GLOW."  It should be noted that these expressions are case sensitive
+and that all keywords should appear in lower-case, while the flag names should
+be in all caps.
+
+
+OLD FORMAT:
+Default DIKU shop files have the following format:
+
+#<xx>~
+  Shop Number (Used only for display purposes)
+
+<num1>
+<num2>
+<num3>
+<num4>
+<num5>
+  These numbers refer to the objects the shop produces.
+  The numbers are virtual numbers.
+
+<Profit when selling>
+  The object value is multiplied by this value when sold. This is a
+  floating point value. Must be >= 1.0
+
+<Profit when buying>
+  The object value is multiplied by this value when bought. This is a
+  floating point value. Must be <= 1.0
+
+<num1>
+<num2>
+<num3>
+<num4>
+<num5>
+  These five numbers are the item-types traded with by the shop.
+  See dbsup.doc.
+
+<Message When Item to buy is non existing>~
+<Message When item trying to sell is non existing>~
+<Message When wrong item-type sold>~
+<Message when shop can't afford item>~
+<Message when player can't afford item>~
+<Message when buying an item>~
+  Price is %d
+<Message when selling an item>~
+  Price is %d
+
+<Temper>
+  When player can't afford an item, the shopkeeper tells them they
+  can't afford the item and then:
+	0 - The shopkeeper pukes on the player.
+	1 - The shopkeeper smokes his joint.
+	other - No action besides message above.
+
+<Bitvector>
+  Allows you to set certain values for the shop:
+	WILL_START_FIGHT        1	/* Players can attack shopkeeper     */
+	WILL_BANK_MONEY         2	/* Shopkeeper puts money > 15000
+					   into the bank		     */
+
+  A brief note:  Shopkeepers should be hard (if even possible) to kill.
+  The benefits players can receive from killing them is enough to unbalance
+  most non monty-haul campaigns.
+
+<Shop Keeper Mobile Number>
+  Virtual number of the shopkeeper.
+
+<With Who>
+  Designate certain alignments or classes that the shop will not
+  trade with.  To determine this value, choose all elements on
+  the list below that you do not want sold to, and add their values.
+
+	TRADE_NOGOOD            1
+	TRADE_NOEVIL            2
+	TRADE_NONEUTRAL         4
+	TRADE_NOMAGIC_USER      8
+	TRADE_NOCLERIC          16
+	TRADE_NOTHIEF           32
+	TRADE_NOWARRIOR         64
+
+
+<Shop Room Number>
+  The virtual number the mobile must be in for the shop to be effective.
+  (So trans'ed shopkeepers can't sell in the desert).
+
+<Time when open start 1>
+<Time when open end 1>
+   The hours between which the shop is open.
+
+<Time when open start 2>
+<Time when open end 2>
+   The hours between which the shop is open.
+

@@ -1,0 +1,87 @@
+\documentclass[11pt]{article}
+\usepackage{url}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+% Document typeset from the original document that was typeset by Jeremy Elson.
+% This document typeset by Alex Fletcher <furry@cambot.circlemud.org> on Dec 6/2001
+
+\addtolength{\topmargin}{-.5in}       % repairing LaTeX's huge  margins...
+\addtolength{\textheight}{1in}        % more margin hacking
+\addtolength{\textwidth}{1in}         % and here...
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\setlength{\parskip}{\baselineskip}
+\setlength{\parindent}{20pt}
+
+\title{Porting CircleMUD to New Platforms}
+\author{Jeremy Elson}
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+CircleMUD is a very portable program by design, but is not guaranteed to run on every platform that exists.  This document is for experienced programmers trying to make CircleMUD work on their platform.
+\end{abstract}
+
+\section{Introduction}
+CircleMUD should work on most UNIX platforms without any modifications; simply run the ``\texttt{configure}'' script and it should automatically detect what type of system you have and anything that may be strange about it.  These findings are all stored in a header file called \texttt{conf.h} which is created in the src directory from a template called \texttt{conf.h.in}.  A \texttt{Makefile} is also created from the template \texttt{Makefile.in}. 
+\par
+Non-UNIX platforms are a problem.  Some can't run CircleMUD at all.  However, any multitasking OS that has an ANSI C compiler, and supports non-blocking I/O and socket-based TCP/IP networking, should theoretically be able to run CircleMUD; for example, OS/2, AmigaOS, Mac OS (Classic versions; Mac OS X supports CircleMUD's configure script from the command line), Windows 3.11/NT/9*.
+\par
+The port can be very easy or very difficult, depending mainly on whether or nor your OS supports the Berkeley socket API.  Windows 95, for example, supports Berkeley sockets with a few modifications using the WinSock library, and OS/2 supports Berkeley sockets with no source changes at all. 
+\par
+The general steps for porting CircleMUD to a non-UNIX platform are listed below.  A number of tips for porting can be found after the porting steps. Note that we have already ported Circle to Windows 95, so if you're confused as to how to perform some of these steps, you can look at what we have done as an example (see the files \texttt{conf.h.win}, \texttt{Makefile.win} and \texttt{README.WIN}). 
+\par
+Note that you should not try to do this unless you are an experienced C programmer and have a solid, working knowledge of the system to which you are trying to port the code. 
+
+\section{Porting the Code}
+\begin{description}
+\item[Step 1.] Create a ``\texttt{conf.h}'' file for your system.\newline
+Copy the template ``\texttt{conf.h.in}'' to ``\texttt{conf.h}'', and then define or undefine each item as directed by the comments and based on the characteristics of your system.  To write the \texttt{conf.h} file, you'll need to know which header files are included with your system, the return type of signals, whether or not your compiler supports the `\texttt{const}' keyword, and whether or not you have various functions such as \texttt{crypt()} and \texttt{random()}.\newline
+Also, you can ignore the \texttt{HAVE\_LIBxxx} and \texttt{HAVE\_xxx\_PROTO} constants at the end of \texttt{conf.h.in}; they are not used in the code (they are part of UNIX \texttt{autoconf}).
+
+\item[Step 2.] Create a \texttt{Makefile}.\newline
+Again, copy the template \texttt{Makefile.in} and make any changes which may be appropriate for your system.  Make sure to remove the \texttt{@xxx@} variables such as \texttt{@LIBS@}, \texttt{@CC@}, \texttt{@NETLIB@}, etc., and replace them with the appropriate values if necessary.
+
+\item[Step 3.] Make the appropriate patches to the code so that the TCP/IP reads and writes and signal handling are compatible with your system. This is the hardest part of porting CircleMUD.  All of the changes you will need to make will probably be in the source file \texttt{comm.c}.
+
+\item[Step 4.] Test your changes!  Make sure that multiple people can log in simultaneously and that they can all type commands at the same time.  No player should ever have a ``frozen'' screen just because another is waiting at a prompt.  Leave the MUD up for at least 24 hours, preferably with people playing it, to make sure that your changes are stable.  Make sure that automatic events such as zone resets, point regeneration, and corpse decomposition are being timed correctly (a tick should be about 75 seconds).  Try resetting all the zones repeatedly by typing ``\texttt{zr *}'' many times.  Play the MUD and make sure that the basic commands (killing mobs as a mortal, casting spells, etc.) work correctly.
+
+\item[Step 5.] If you are satisfied that your changes work correctly, you are encouraged to submit them to be included as part of the stock CircleMUD distribution so that future releases of Circle will support your platform.  This prevents you from re-porting the code every time a new version is released and allows other people who use your platform to enjoy CircleMUD as well.\newline
+To submit your changes you must make a patch file using the GNU `\texttt{diff}' program which can be downloaded by anonymous FTP from \url{ftp://ftp.gnu.org:/pub/gnu/diffutils-x.x.tar.gz}.  \texttt{diff} will create a patch file which can be later used with the `\texttt{patch}' utility to incorporate your changes into the stock CircleMUD distribution.  For example, if you have a copy of stock (plain) CircleMUD in the ``\texttt{stock-circle}'' directory, and your changes are in ``\texttt{my-circle}'', you can create a patch file like this:
+\begin{verbatim}
+ diff -u --new-file --recursive stock-circle/src my-circle/src > patch
+\end{verbatim}
+This will create a file called `\texttt{patch}' with your patches.  You should then try to use the `\texttt{patch}' program (the inverse of `\texttt{diff}') on a copy of stock circle to make sure that Circle is correctly changed to incorporate your patches.\newline
+This step is very important: if you don't create these patches correctly, your work will be useless because no one will be able to figure out what you did!  Make sure to read the documentation to `\texttt{diff}' and `\texttt{patch}' if you don't understand how to use them.\newline
+If your patches work, CELEBRATE!!
+
+\item[Step 6.] Write a \texttt{README} file for your operating system that describes everything that has to be done by another user of your operating system to get CircleMUD to compile from scratch.  You should include a section on required hardware, software, compilers, libraries, etc. Also include detailed, step-by-step instructions on how to compile and run everything.  You can look at the other \texttt{README} files in the distribution (\texttt{README.WIN}, \texttt{README.OS2}, etc.) for examples of what your \texttt{README} file should include.
+
+\item[Step 7.] You are done!  Congratulations!  Mail your \texttt{conf.h}, \texttt{Makefile}, patches,
+and \texttt{README} file to the CircleMUD Group $<$cdev@circlemud.org$>$ so that they can be included in future releases of CircleMUD.  Please share your work so that other users of your OS can use Circle, too.
+\end{description}
+
+\section{Porting Tips}
+Some tips about porting:
+
+\subsection{Making your own \texttt{CIRCLE\_system} constant}
+Each system to which Circle is already ported has a \texttt{CIRCLE\_xx} constant associated with it: \texttt{CIRCLE\_UNIX} for plain vanilla UNIX CircleMUD, \texttt{CIRCLE\_WINDOWS} for MS Win95/NT, \texttt{CIRCLE\_OS2} for IBM OS/2, and \texttt{CIRCLE\_AMIGA} for the Amiga.  You must use a similar constant for your system.  At the top of your \texttt{conf.h}, make sure to comment out ``\texttt{\#define CIRCLE\_UNIX}'' and add ``\texttt{\#define CIRCLE\_YOUR\_SYSTEM}''.
+
+\subsection{ANSI C and GCC}
+As long as your system has an ANSI C compiler, all of the code (except for \texttt{comm.c}) should compile with no major complaints. However, Circle was written using \texttt{gcc}, and some compilers are nitpicky about things that \texttt{gcc} does not care about (and the other way around).  Therefore, you are {\em highly} encouraged to use \texttt{gcc} if at all possible.  \texttt{gcc} has been ported to a very large number of platforms, possibly including yours, and your port will be made much easier if you use \texttt{gcc}.  You can download \texttt{gcc} via anonymous FTP from \url{ftp://ftp.gnu.org:/pub/gnu/}.
+
+\subsection{Non-Blocking I/O}
+Make absolutely sure to use non-blocking I/O; i.e.\ make sure to enable the option so that the \texttt{read()} system call will immediately return with an error if there is no data available. If you do {\em not} use non-blocking I/O, \texttt{read()} will ``block,'' meaning it will wait infinitely for one particular player to type something even if other players are trying to enter commands.  If your system does not implement non-blocking I/O correctly, try using the \texttt{POSIX\_NONBLOCK\_BROKEN} constant in \texttt{sysdep.h}.
+
+\subsection{Timing}
+CircleMUD needs a fairly precise (on the order of 5 or 10 ms) timer in order to correctly schedule events such as zone resets, point regeneration (``ticks''), corpse decomposition, and other automatic tasks.  If your system supports the \texttt{select()} system call with sufficient precision, the default timing code should work correctly.  If not, you'll have to find out which system calls your system supports for determining how much time has passed and replace the \texttt{select()} timing method.
+
+\subsection{Signals and Signal Handlers}
+A note about signals: Most systems don't support the concept of signals in the same way that UNIX does.  Since signals are not a critical part of how Circle works anyway (they are only used for updating the wizlist and some other trivial things), all signal handling is turned off by default when compiling under any non-UNIX platform (i.e.\ the Windows 95 and Amiga ports do not use signals at all.)  Simply make sure that \texttt{CIRCLE\_UNIX} is {\em not} defined in your \texttt{conf.h} file and all signal code will be ignored automatically.
+
+\section{Final Note}
+{\bf IMPORTANT:} Remember to keep any changes you make surrounded by \texttt{\#ifdef} statements (i.e.\ ``\texttt{\#ifdef CIRCLE\_WINDOWS} ... \texttt{\#endif}'').  If you make absolutely sure to mark all of your changes with \texttt{\#ifdef} statements, then your patches (once you get them to work) will be suitable for incorporation into the CircleMUD distribution, meaning that CircleMUD will officially support your platform.
+
+\end{document}
+\end

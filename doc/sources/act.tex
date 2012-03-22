@@ -1,0 +1,211 @@
+\documentclass[11pt]{article}
+\usepackage{url}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{varioref}
+\usepackage{multicol}
+% Document typeset from the original document that was typeset by Jeremy Elson.
+% This document typeset by Alex Fletcher <furry@circlemud.org> on Dec 4/2001
+
+\addtolength{\topmargin}{-.5in}       % repairing LaTeX's huge  margins...
+\addtolength{\textheight}{1in}        % more margin hacking
+\addtolength{\textwidth}{1in}         % and here...
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\setlength{\parskip}{\baselineskip}
+\setlength{\parindent}{20pt}
+\newenvironment{Ventry}[1]
+  {\begin{list}{}{\renewcommand{\makelabel}[1]{\textsf{##1:}\hfil}
+    \settowidth{\labelwidth}{\textsf{#1:}}
+    \setlength{\leftmargin}{\labelwidth}
+    \addtolength{\leftmargin}{\labelsep}
+  }
+  }
+  {\end{list}}
+
+\title{The \texttt{act()} Function}
+\author{Alex Fletcher\\
+{\it Based on text from the DikuMud authors}}
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document is intended to give an overview of the \texttt{act()} function and give a summary of the various flags and the associated descriptive control characters.  The \texttt{act()} function is one of the primary functions for sending a message from the game to a character or number of characters in a room.
+\end{abstract}
+
+\tableofcontents
+
+\section{The \texttt{act()} Function}
+\subsection{Overview}\label{overview}
+The \texttt{act()} function is used to process and send strings of text to characters in a room.  It can be used to send the same basic string to a number of characters filling in certain segments -- designated by control characters -- in different ways, dependant on what each character can see and who each character is.  Once the text string passed to the function has been parsed, it is capitalized and a newline is added to its tail.
+
+\subsection{The Function}\label{function}
+The \texttt{act()} function is found in the \texttt{comm.c} source file and is described as:
+\begin{verbatim}
+  void act(const char *str, int hide_invisible, struct char_data *ch,
+           struct obj_data *obj, const void *vict_obj, int type)
+\end{verbatim}
+These pieces are used as follows:
+\begin{Ventry}{hide\_invisible}
+\item[str] This is the basic string, a null terminated character array, including control characters (see section~\vref{controlcharacters}~`Control Characters'), to be sent to characters designated by the targets.
+\item[hide\_invisible] A \texttt{TRUE} or \texttt{FALSE} value indicating whether or not to hide the entire output from any characters that cannot see the ``performing character''.
+\item[ch] The ``performing character''.  This is the character that the output string is associated with.  The character is used to determine the room for the output of the action in question.
+\item[obj] An object (an actual item -- \texttt{obj\_data}) used in the course of the action.
+\item[vict\_obj] This can be either a character involved in the action, another object, or even a predefined string of text.
+\item[type] One of \texttt{TO\_VICT}, \texttt{TO\_CHAR}, \texttt{TO\_NOTVICT}, or \texttt{TO\_ROOM}. This indicates who it is to be targeted at.
+\end{Ventry}
+
+\subsection{The Parameters}\label{parameters}
+Of the various parameters passed to the \texttt{act()} function, the \texttt{str} is the most important, as it is the basis for the actual final output.  If this parameter is a null-pointer or points to a null-character, then the function returns immediately. The next important parameter is the \texttt{ch} parameter.  This, as mentioned, points to the central character associated with the output string and action.
+\par
+\texttt{obj} is an object of type \texttt{struct obj\_data~*} that is passed to the function.  If there is no object to pass to the function, then a \texttt{NULL} or \texttt{0} should be passed in this location.
+\par
+The next parameter \texttt{vict\_obj} can be a number of things ranging from a game object (\texttt{strcut obj\_data~*}), through to a character (\texttt{struct char\_data~*}), and even a null terminated character array (\texttt{char~*}).
+\par
+Do note, however, that \texttt{obj} and \texttt{vict\_obj} are both ignored if there is no control character reference (see section~\vref{controlcharacters}~`Control Characters') to them and the \texttt{type} is set to \texttt{TO\_ROOM} or \texttt{TO\_CHAR}.  In these cases, \texttt{NULL} should be supplied as the input to the function.
+\par
+The \texttt{hide\_invisible} flag dictates whether or not the action output should be hidden from characters that cannot see \texttt{ch}.  If the flag is set to \texttt{TRUE} (non-zero), then this is the case.
+\par
+The \texttt{type} determines who the output is to be sent to.  There are four options for this (all defined in \texttt{comm.h}) described below:
+\begin{Ventry}{TO\_NOTVICT}
+\item[TO\_ROOM] This sends the output to everybody in the room, except \texttt{ch}.
+\item[TO\_VICT] This option sends the output to the character pointed to by \texttt{vict\_obj}. Obviously, in this case, \texttt{vict\_obj} must point at a character rather than an object.
+\item[TO\_NOTVICT] In another case where \texttt{vict\_obj} must point to a character.  This sends the output to everybody in the room except \texttt{ch} and \texttt{vict\_obj}.
+\item[TO\_CHAR] Finally, this option sends the output to the \texttt{ch}.
+\item[TO\_SLEEP] This is a special option that must be combined with one of the above options.  It tells \texttt{act()} that the output is to be sent even to characters that are sleeping.  It is combined with a bitwise `or'.  For example, \texttt{TO\_VICT $|$ TO\_SLEEP}.
+\end{Ventry}
+When the string has been parsed, it is capitalized and a newline is added.
+
+\subsection{Control Characters}\label{controlcharacters}
+In a manner similar to the \texttt{printf()} family of functions, \texttt{act()} uses control characters.  However, instead of using the {\bf \%} symbol, \texttt{act()} uses the {\bf \$} character to indicate control characters.
+\begin{description}
+\item[\$n] Write name, short description, or ``{\it someone}'', for \texttt{ch}, depending on whether \texttt{ch} is a PC, a NPC, or an invisible PC/NPC.
+\item[\$N] Like {\bf \$n}, except insert the text for \texttt{vict\_obj}. NOTE: \texttt{vict\_obj} must point to an object of type \texttt{struct char\_data~*}.
+\item[\$m] ``{\it him},'' ``{\it her},'' or ``{\it it},'' depending on the gender of \texttt{ch}.
+\item[\$M]  Like {\bf \$m}, for \texttt{vict\_obj}. NOTE: \texttt{vict\_obj} must be a pointer of type \texttt{struct char\_data~*}.
+\item[\$s] ``{\it his},'' ``{\it her},'' or ``{\it it},'' depending on the gender of \texttt{ch}.
+\item[\$S] Like {\bf \$s}, for \texttt{vict\_obj}. NOTE: \texttt{vict\_obj} must be a pointer of type \texttt{struct char\_data~*}.
+\item[\$e] ``{\it he},'' ``{\it she},'' ``{\it it},'' depending on the gender of \texttt{ch}.
+\item[\$E] Like {\bf \$e}, for \texttt{vict\_obj}. NOTE: \texttt{vict\_obj} must be a pointer of type \texttt{struct char\_data~*}.
+\item[\$o] Name or ``{\it something}'' for \texttt{obj}, depending on visibility.
+\item[\$O] Like {\bf \$o}, for \texttt{vict\_obj}. NOTE: \texttt{vict\_obj} must be a pointer of type \texttt{struct obj\_data~*}.
+\item[\$p] Short description or ``{\it something}'' for \texttt{obj}.
+\item[\$P] Like {\bf \$p} for \texttt{vict\_obj}. NOTE: \texttt{vict\_obj} must be a pointer of type \texttt{struct obj\_data~*}.
+\item[\$a] ``{\it an}'' or ``{\it a}'', depending on the first character of \texttt{obj}'s name.
+\item[\$A] Like {\bf \$a}, for \texttt{vict\_obj}. NOTE: \texttt{vict\_obj} must be a pointer of type \texttt{struct obj\_data~*}.
+\item[\$T] Prints the string pointed to by \texttt{vict\_obj}.  NOTE: \texttt{vict\_obj} must be a pointer of type \texttt{char~*}.
+\item[\$F] Processes the string pointed to by \texttt{vict\_obj} with the \texttt{fname()} function prior to printing. NOTE: \texttt{vict\_obj} must be a pointer of type \texttt{char~*}.
+\item[\$u] Processes the buffer and uppercases the first letter of the previous word (the word immediately prior to the control code).  If there is no previous word, no action is taken.
+ \item[\$U] Processes the buffer and uppercases the first letter of the following word (the word immediately after to the control code).  If there is no following word, no action is taken.
+\item[\$\$] Print the character `\$'.
+\end{description}
+
+\subsection{Examples}\label{examples}
+In all of the following examples, \texttt{ch} points to male character {\bf Ras}, \texttt{vict} always points to the female character {\bf Anna}.  \texttt{obj1} is {\it a small sword}, and \texttt{obj2} is {\it a small sack}.
+
+\begin{verbatim}
+  act("$n smiles happily.", TRUE, ch, NULL, NULL, TO_ROOM);
+\end{verbatim}
+This is sent to the room that {\bf Ras} is currently in, and the string that they see if they can see him is:
+\begin{quote}
+{\em Ras smiles happily.}
+\end{quote}
+If a character cannot see Ras, then they will not see the action at all.
+
+\begin{verbatim}
+  act("You kiss $M.", FALSE, ch, NULL, vict, TO_CHAR);
+\end{verbatim}
+In this action, {\bf Ras} is kissing {\bf Anna}, and Ras will see:
+\begin{quote}
+{\em You kiss her.}
+\end{quote}
+
+\begin{verbatim}
+  act("$n gives $p to $N.", TRUE, ch, obj1, vict, TO_NOTVICT);
+\end{verbatim}
+The output from this string is sent to everyone in the room except for {\bf Ras} and {\bf Anna}.  Of course, if they cannot see Ras, then they will not see any output at all.  The string that each character in the room will see is:
+\begin{quote}
+{\em Ras gives a small sword to Anna.}
+\end{quote}
+If a character cannot see Anna, then {\it someone} will be used in place of her name, and if they cannot see the small sword, then {\it something} will be used in its place.
+
+\begin{verbatim}
+  act("$n gives you $p.", FALSE, ch, obj1, vict, TO_VICT);
+\end{verbatim}
+Similar to the prior example, this is the output for {\bf Anna}.  She will see this even if she cannot see {\bf Ras}, and the output that she will get is:
+\begin{quote}
+{\em Ras gives you a small sword.}
+\end{quote}
+Just as per the last example, if she cannot see Ras, {\it someone} will be used in place of his name, and if she cannot see the sword, then {\it something} will be used in its place.
+
+\begin{verbatim}
+  act("$n puts $p in $s $O.", TRUE, ch, obj1, obj2, TO_ROOM);
+\end{verbatim}
+This action uses two objects rather than two characters, and is displayed to the entire room (with the exception of {\bf Ras} of course).  If the character can see Ras, they will see:
+\begin{quote}
+{\em Ras puts a small sword in his small sack.}
+\end{quote}
+Otherwise, they will see nothing.  Again, as per the prior two examples, {\it something} will be used in place of any objects that the viewing character cannot see.
+
+\begin{verbatim}
+  act("The $F opens quietly.", FALSE, ch, NULL, EXIT(ch, door)->keyword, TO_ROOM);
+\end{verbatim}
+If the keywords for the door were {\it gate wooden}, then this would send the output string of:
+\begin{quote}
+{\em The gate opens quietly.}
+\end{quote}
+to all of the characters in the room with the exception of Ras.
+\par
+In addition to these examples, a multitude of other examples can be found scattered throughout the CircleMUD source code.
+\appendix
+%
+% The following is a reiteration of some of the above sections into a one-page, two column
+% quick reference sheet.
+%
+\newpage
+\pagestyle{empty}
+\setlength{\topskip}{0cm}
+\setlength{\footskip}{0cm}
+\section{\texttt{act()} Reference Sheet}
+\begin{verbatim}
+  void act(const char *str, int hide_invisible, struct char_data *ch,
+           struct obj_data *obj, const void *vict_obj, int type)
+\end{verbatim}
+\begin{Ventry}{hide\_invisible}
+\item[str] String to be parsed.
+\item[hide\_invisible] If \texttt{TRUE}, hide from characters that cannot see the ``performer''.
+\item[ch] The ``performer''.  Also determines the room for the output.
+\item[obj] \texttt{struct obj\_data~*}
+\item[vict\_obj] Predefined string of text, or second character or object.
+\item[type] \texttt{TO\_VICT}, \texttt{TO\_CHAR}, \texttt{TO\_NOTVICT}, or \texttt{TO\_ROOM}.
+\end{Ventry}
+ \vspace*{0.5cm}
+\renewcommand{\columnseprule}{0.5pt}
+\begin{multicols}{2}
+\begin{description}
+\item[\$a] ``{\it an}'' or ``{\it a}'', depending on the first character of \texttt{obj}'s name.
+\item[\$A] Like {\bf \$a}, for \texttt{vict\_obj} which is of type \texttt{struct obj\_data~*}.
+\item[\$e] ``{\it he},'' ``{\it she},'' ``{\it it},'' depending on the gender of \texttt{ch}.
+\item[\$E] Like {\bf \$e}, for \texttt{vict\_obj} which is of type \texttt{struct char\_data~*}.
+\item[\$F] Processes the string pointed to by \texttt{vict\_obj} (pointer of type \texttt{char~*}) with the \texttt{fname()} function prior to printing.
+\item[\$n] Write name, short description, or ``{\it someone}'', for \texttt{ch}, depending on whether \texttt{ch} is a PC, a NPC, or an invisible PC/NPC.
+\item[\$N] Like {\bf \$n}, except insert the text for \texttt{vict\_obj} which is of type \texttt{struct char\_data~*}.
+\item[\$m] ``{\it him},'' ``{\it her},'' or ``{\it it},'' depending on the gender of \texttt{ch}.
+\item[\$M]  Like {\bf \$m}, for \texttt{vict\_obj} which is of type \texttt{struct char\_data~*}.
+\item[\$o] Name or ``{\it something}'' for \texttt{obj}, depending on visibility.
+\item[\$O] Like {\bf \$o}, for \texttt{vict\_obj} which is of type \texttt{struct obj\_data~*}.
+\item[\$p] Short description or ``{\it something}'' for \texttt{obj}.
+\item[\$P] Like {\bf \$p} for \texttt{vict\_obj} which is of type \texttt{struct obj\_data~*}.
+\item[\$s] ``{\it his},'' ``{\it her},'' or ``{\it it},'' depending on the gender of \texttt{ch}.
+\item[\$S] Like {\bf \$s}, for \texttt{vict\_obj} which is of type \texttt{struct char\_data~*}.
+\item[\$T] Prints the string pointed to by \texttt{vict\_obj} which is of type \texttt{char~*}.
+\item[\$u] Processes the buffer and uppercases the first letter of the previous word (the word immediately prior to the control code).
+ \item[\$U] Processes the buffer and uppercases the first letter of the following word (the word immediately after to the control code).
+\item[\$\$] Print the character `\$'.
+\end{description}
+
+
+\end{multicols}
+\end{document}
+\end

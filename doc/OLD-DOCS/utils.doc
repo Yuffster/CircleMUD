@@ -1,0 +1,219 @@
+/**************************************************************************
+*  Copyright (C) 1993 - see 'license.doc' for complete information.       *
+*  Jeremy Elson; 7/12/93                                                  *
+**************************************************************************/
+
+			    CIRCLEMUD UTILITIES
+				"utils.doc"
+
+
+There are currently 12 utilities and several shell scripts which come with
+CircleMUD to help you run and maintain it.  This file documents them.
+
+Brief Synopsis
+--------------
+AUTOWIZ		Automatically generate a wizlist and an immlist from the
+		playerfile.
+DELOBJS		Delete the object files (i.e. crash-save, rent, cryo-rent,
+		etc.) of players who no longer exist in the playerfile.
+HASMAIL		Return an exit status of 0 or 1, depending on if the
+		recipient specified has MUDmail waiting or not.
+LISTRENT	Show the contents of one of more object files.
+MAILINDEX	Generate a list of all mail contained in a mail file.
+MUDPASSWD	Change the password of a MUD character in a playerfile.
+PURGEPLAY	Create a new playerfile with deadweight characters removed.
+READMAIL	Print mail contained in a mail file.
+SHOWPLAY	List players contained in a playerfile.
+SIGN		Present a sign on a port (i.e. "MUD will be down today").
+SPLIT		Split a large file into several smaller files.
+SYNTAX_CHECK	Check the syntax of a set of world files.
+
+
+
+Detailed Documentation
+----------------------
+
+AUTOWIZ
+
+Autowiz is not really meant to be run by a person; the MUD automatically
+executes it every time someone reaches immortality or is promoted to an
+immort or higher level.
+
+It must be compiled and in the circle/bin directory in order for the
+automatic wizlist system to work, of course.
+
+
+DELOBJS
+
+delobjs <playerfile> <file1> <file2> <filen>
+
+Delobjs generates an index of all players in the playerfile, then checks
+each file listed on the command line to make sure that the object file
+has a corresponding player in the player index.  If the player does not
+exist, the object file is deleted.
+
+Although this program can be run manually, it is much easier simply to
+use the "purgeobjs" script in the lib/plrobjs directory.  That script
+will automatically run delobjs on every file in each of the 5 object
+directory, and save a list of the files deleted to a file called DELETED.
+
+
+LISTRENT
+
+listrent <file1> <file2> ... <filen>
+
+Listrent will simply list the contents of an object save file.  You can
+list as many files as you like on the command line; the contents of each
+file will be listed.
+
+Included in the lib/plrobjs directory is a script called 'searchfor', which
+you can use to see who in the game has certain items.  For example, if you
+wanted to see who had object #3001 rented, you would switch into the
+lib/plrobjs directory and type "searchfor 3001".
+
+
+
+
+HASMAIL
+
+hasmail <mail-file> <recipient-name>
+
+Hasmail has no output -- it just returns a 0 or 1, depending on if you
+have mail waiting or not.  It's useful for putting something like this
+in your .login (assuming you use csh):
+
+set NAME = ras
+
+if ( { hasmail ~/circle/lib/misc/plrmail $NAME } ) then
+   echo "You have mud-mail waiting."
+endif
+
+
+
+MAILINDEX and READMAIL
+
+CircleMUD's mail files are binary files -- they can't be read with 'cat',
+'more', etc.  The MAILINDEX and READMAIL commands allow you to see the
+contents of a mail file.
+
+Obviously, there are a lot of serious privacy issues which go along with
+programs like this.  For exactly that reason, I didn't even write these
+utilities for months after I wrote the mail system.  I eventually broke
+down and wrote them because there is no way to save Mudmail after you've
+read it from within the MUD, but READMAIL allows you to do just that --
+read your mail without deleting it.
+
+As a footnote, the MUDmail system was intentionally designed so that
+one is not able to save mail after having read it.  I have a tendency
+to save all of my (real) email, as do many other people, and I didn't
+want hundreds of mud players to start saving all their MUDmail at the
+expense of my disk.
+
+Now that I've loaded these utilities with excessive moral baggage, I'll
+describe how they are used.
+
+mailindex <mailfile>
+readmail <mailfile> <recipient-name>
+
+
+MAILINDEX will show you a list of all letters currently in the mail file,
+in the following format:
+
+Recipient 1
+	Sender 1
+	[...]
+	Sender n
+Recipient 2
+	Sender 1
+	[...]
+	Sender n
+[...]
+Recipient m
+	Sender 1
+	[...]
+	Sender n
+
+
+READMAIL will show you all mail addressed to the recipient you specify.
+
+
+
+MUDPASSWD
+
+mudpasswd <playerfile> <character> <new-password>
+
+MUDPASSWD is used to change the password of a character in the playerfile.
+It can be done while the game is running, but "set passwd" from within the
+game is probably safer.
+
+MUDPASSWD is useful for people who forget their passwords, etc.  SET PASSWD
+does the same thing.
+
+
+PURGEPLAY
+
+purgeplay <playerfile-name>
+
+PURGEPLAY will read all the characters in the playerfile you specify, and
+output a new playerfile called 'players.new', with "deadweight" characters
+removed.  The original playerfile will not be changed.  Characters meeting
+one or more of the following criteria will not be included in players.new:
+
+	- Buggy characters (i.e., non-alphabetic name or invalid level)
+	- Characters with a DELETED flag
+	- Level 0 characters (connected but never entered game)
+
+	- If a character is NOT cryo-rented, the following timeouts apply:
+		- Level 1 characters who have not played in 4 days
+		- Level 2-4 characters who have not played in 7 days
+		- Level 5-10 characters who have not played in 30 days
+		- Level 11-30 characters who have not played in 60 days
+		- Level 31 characters who have not played in 90 days
+	- If a character IS cryo-rented, the timout for levels 1-31 is 90 days.
+
+	- A CHARACTER WITH A NODELETE FLAG WILL NOT BE REMOVED, even if
+	  the character meets one or more of the above criteria.
+
+PURGEPLAY will generate a report of all characters which were not included
+in players.new and the reason for their omission.
+
+
+
+SIGN
+
+sign <filename | '-'> <port #>
+
+SIGN is used for putting a message on a port, i.e., "BazookaMUD is currently
+down for repairs."  The second argument can either be the name of a text
+file or a dash; if it is a dash, SIGN will prompt you for the sign text.
+Port # is, of course, the port on which you'd like the sign to be displayed.
+
+
+
+SPLIT
+
+Split reads text files from standard input and writes a series of files
+to disk as output.  Its intended usage it to take a large diku world
+file and split it into several smaller, more managable files.  You'll
+probably only need to use it if you're porting a large world file from
+some other MUD to Circle.
+
+To use SPLIT, insert a line containing only "=filename" at each point
+in the original file where you'd like SPLIT to start writing to a
+new file.  When SPLIT reaches a line starting with '=', it will begin
+writing all subsequent lines to a file called 'filename' until the next
+'=' or EOF is encountered.  #99999 is appended to the end of each file.
+A file called 'index' is created, containing a list of all files which
+were created (see running.doc for more information about index files.)
+
+
+
+SYNTAX_CHECK
+
+syntax_check <zone number>
+
+Syntax_check is a utility for checking that world files are formatted
+correctly.  It should be run from the main lib/world directory.  If you
+type 'syntax_check 30', it will check the files wld/30.wld, obj/30.obj,
+mob/30.mob, and zon/30.zon.
+
